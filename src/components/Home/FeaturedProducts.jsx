@@ -116,7 +116,7 @@ const FeaturedProducts = () => {
           </div>
           <div className="flex items-center gap-4 border-b border-gray-200 overflow-x-auto whitespace-nowrap custom-scrollbar pb-1">
             <button className="pb-2 px-2 border-b-2 border-green-600 text-green-600 font-bold text-sm md:text-base">
-              Sob Products
+              All Products
             </button>
             <button className="pb-2 px-2 text-gray-400 hover:text-gray-800 transition-colors text-sm md:text-base">
               Vegetables
