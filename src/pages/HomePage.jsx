@@ -1,9 +1,12 @@
 import React from 'react';
+import HeroSection from '../components/Home/HeroSection';
+import FeaturedProducts from '../components/Home/FeaturedProducts';
 
 const HomePage = () => {
   return (
     <div>
-      this is home page
+      <HeroSection/>
+      <FeaturedProducts/>
     </div>
   );
 };
