@@ -4,6 +4,7 @@ import FeaturedProducts from '../components/Home/FeaturedProducts';
 import DiscountSection from '../components/Home/DiscountSection';
 import RatingSection from '../components/Home/RatingSection';
 import ServiceSection from '../components/Home/ServiceSection';
+import FAQSection from '../components/Home/FAQSection';
 
 const HomePage = () => {
   return (
@@ -13,6 +14,7 @@ const HomePage = () => {
       <DiscountSection/>
       <RatingSection/>
       <ServiceSection/>
+      <FAQSection/>
     </div>
   );
 };
