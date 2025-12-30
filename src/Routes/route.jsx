@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router";
 import HomeLayouts from "../layouts/HomeLayouts";
 import HomePage from "../pages/HomePage";
 import AllGrocerice from "../pages/AllGrocerice";
+import Contact from "../pages/Contact";
+import ProductDetails from "../pages/ProductDetails";
 
 export const route = createBrowserRouter([
   {
@@ -15,7 +17,15 @@ export const route = createBrowserRouter([
       {
         path: "/all-grocerice",
         element: <AllGrocerice/>
-      }
+      },
+      {
+        path: "/contact",
+        element: <Contact/>
+      },
+      {
+        path: "/detailes/:id",
+        element: <ProductDetails/>
+      },
     ]
   }
 ])

@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
 
 // --- Internal Icons for Portability ---
 const IconCart = () => (
@@ -70,9 +71,9 @@ const ProductCard = ({ product }) => {
         <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
           <span className="scale-75 md:scale-100"><IconSync /></span>
         </button>
-        <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
+        <Link to={`/detailes/${product._id}`} className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
           <span className="scale-75 md:scale-100"><IconEye /></span>
-        </button>
+        </Link>
       </div>
 
       

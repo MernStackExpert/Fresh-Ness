@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router"; // useNavigate ইমপোর্ট করা হয়েছে
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router"; // useLocation যোগ করা হয়েছে
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IoSearchOutline, IoPersonOutline, IoHeartOutline,
@@ -11,17 +11,33 @@ import { RiPercentLine } from "react-icons/ri";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // সার্চ স্টেট
-  const navigate = useNavigate(); // নেভিগেট করার জন্য
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [cartCount, setCartCount] = useState(0); // কার্ট কাউন্ট স্টেট
+  
+  const navigate = useNavigate();
+  const location = useLocation(); // বর্তমান পাথ চেক করার জন্য
 
-  // সার্চ হ্যান্ডলার ফাংশন
+  // ১. কার্ট কাউন্ট আপডেট করার লজিক
+  const updateCartCount = () => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    // মোট আইটেমের সংখ্যা অথবা কোয়ান্টিটির যোগফল নিতে পারেন
+    const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    setCartCount(totalItems);
+  };
+
+  useEffect(() => {
+    updateCartCount();
+    // অন্য পেজ থেকে কার্ট আপডেট হলে যেন এখানেও আপডেট হয়
+    window.addEventListener("storage", updateCartCount);
+    return () => window.removeEventListener("storage", updateCartCount);
+  }, []);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      // ইউজারকে All Groceries পেজে পাঠানো হচ্ছে এবং কুয়েরি প্যারামিটারে সার্চ টেক্সট দেওয়া হচ্ছে
       navigate(`/all-grocerice?search=${searchTerm}`);
-      setSearchTerm(""); // সার্চ শেষে ইনপুট খালি করা
-      setIsMenuOpen(false); // মোবাইল মেনু বন্ধ করা
+      setSearchTerm(""); 
+      setIsMenuOpen(false); 
     }
   };
 
@@ -45,36 +61,11 @@ const Navbar = () => {
         { name: "Product Details", path: "/product-details" }
       ]
     },
-    {
-      name: "Vendor",
-      path: null,
-      dropdown: [
-        { name: "Vendor List", path: "/vendor-list" },
-        { name: "Vendor Store", path: "/vendor-store" }
-      ]
-    },
-    {
-        name: "Elements",
-        path: null,
-        dropdown: [
-          { name: "Buttons", path: "/buttons" },
-          { name: "Banners", path: "/banners" }
-        ]
-      },
-      {
-        name: "Blog",
-        path: null,
-        dropdown: [
-          { name: "Blog Grid", path: "/blog-grid" },
-          { name: "Blog Detail", path: "/blog-detail" }
-        ]
-      },
     { name: "Contact", path: "/contact", dropdown: null },
   ];
 
   return (
     <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-[100] shadow-sm">
-      {/* --- Main Header --- */}
       <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
 
         <motion.button 
@@ -89,7 +80,7 @@ const Navbar = () => {
           FreshNess
         </Link>
 
-        {/* Search Bar (Desktop) - Form ব্যবহার করা হয়েছে যাতে Enter চাপলে সার্চ হয় */}
+        {/* Search Bar */}
         <form 
           onSubmit={handleSearch}
           className="hidden lg:flex flex-1 max-w-xl items-center border-2 border-gray-100 rounded-full focus-within:border-amber-400 transition-all ml-4 overflow-hidden"
@@ -112,9 +103,21 @@ const Navbar = () => {
             <IoPersonOutline size={22} />
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative cursor-pointer"><IoSyncOutline size={26} /><span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span></div>
-            <div className="relative cursor-pointer"><IoHeartOutline size={26} /><span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span></div>
-            <div className="relative cursor-pointer"><IoCartOutline size={26} /><span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span></div>
+            <div className="relative cursor-pointer hover:text-green-600 transition-colors">
+                <IoSyncOutline size={26} />
+                <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
+            </div>
+            <div className="relative cursor-pointer hover:text-green-600 transition-colors">
+                <IoHeartOutline size={26} />
+                <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
+            </div>
+            {/* ডাইনামিক কার্ট কাউন্ট */}
+            <Link to="/cart" className="relative cursor-pointer hover:text-green-600 transition-colors">
+                <IoCartOutline size={26} />
+                <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                    {cartCount}
+                </span>
+            </Link>
           </div>
         </div>
       </div>
@@ -126,7 +129,10 @@ const Navbar = () => {
             {navLinks.map((link, idx) => (
               <li key={idx} className="relative group py-5">
                 {link.path ? (
-                  <Link to={link.path} className="flex items-center gap-1 hover:text-green-600 transition-colors cursor-pointer">
+                  <Link 
+                    to={link.path} 
+                    className={`flex items-center gap-1 transition-colors cursor-pointer ${location.pathname === link.path ? "text-green-600" : "hover:text-green-600"}`}
+                  >
                     {link.name}
                   </Link>
                 ) : (
@@ -134,11 +140,15 @@ const Navbar = () => {
                     {link.name} {link.dropdown && <IoChevronDownOutline className="text-sm group-hover:rotate-180 transition-transform duration-300" />}
                   </span>
                 )}
+                
                 {link.dropdown && (
                   <div className="absolute top-full left-0 min-w-[200px] bg-white shadow-xl border border-gray-100 rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-50 p-2">
                     {link.dropdown.map((sub, sIdx) => (
                       <motion.div key={sIdx} whileHover={{ x: 5 }}>
-                        <Link to={sub.path} className="block py-2 px-3 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md ">
+                        <Link 
+                            to={sub.path} 
+                            className={`block py-2 px-3 text-sm rounded-md ${location.pathname === sub.path ? "text-green-600 bg-green-50" : "text-gray-600 hover:text-green-600 hover:bg-green-50"}`}
+                        >
                           {sub.name}
                         </Link>
                       </motion.div>
@@ -175,19 +185,14 @@ const Navbar = () => {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed top-0 left-0 w-80 h-screen bg-white z-[210] shadow-2xl lg:hidden flex flex-col"
-              onClick={(e) => e.stopPropagation()}
             >
-              {/* Sidebar Header */}
               <div className="p-5 flex items-center justify-between bg-indigo-800 text-white font-bold shrink-0">
                 <span className="text-xl italic">FreshNess</span>
                 <button onClick={() => setIsMenuOpen(false)}><IoCloseOutline size={30} /></button>
               </div>
 
-              {/* Sidebar Content */}
               <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                {/* Mobile Search Form */}
                 <form onSubmit={handleSearch} className="flex border border-gray-200 rounded-lg overflow-hidden mb-6">
                   <input 
                     type="text" 
@@ -206,7 +211,10 @@ const Navbar = () => {
                         className="flex items-center justify-between py-3 text-gray-800 font-semibold cursor-pointer"
                         onClick={() => link.dropdown ? setActiveDropdown(activeDropdown === idx ? null : idx) : (setIsMenuOpen(false))}
                       >
-                        {link.path ? <Link to={link.path} className="w-full">{link.name}</Link> : <span>{link.name}</span>}
+                        {link.path ? 
+                            <Link to={link.path} className={`w-full ${location.pathname === link.path ? "text-green-600" : ""}`}>{link.name}</Link> : 
+                            <span>{link.name}</span>
+                        }
                         {link.dropdown && <IoChevronDownOutline className={`transition-transform duration-300 ${activeDropdown === idx ? 'rotate-180' : ''}`} />}
                       </div>
 
@@ -214,7 +222,7 @@ const Navbar = () => {
                         {link.dropdown && activeDropdown === idx && (
                           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-gray-50 rounded-lg">
                             {link.dropdown.map((sub, sIdx) => (
-                              <Link key={sIdx} to={sub.path} onClick={() => setIsMenuOpen(false)} className="block py-3 px-4 text-sm text-gray-600 hover:text-green-600 border-l-2 border-transparent hover:border-green-600 transition-all font-semibold">
+                              <Link key={sIdx} to={sub.path} onClick={() => setIsMenuOpen(false)} className="block py-3 px-4 text-sm text-gray-600 hover:text-green-600 font-semibold">
                                 {sub.name}
                               </Link>
                             ))}
@@ -224,24 +232,6 @@ const Navbar = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
-
-              {/* Sidebar Bottom */}
-              <div className="p-4 border-t border-gray-100 bg-gray-50 shrink-0 space-y-4">
-                 <div className="flex items-center gap-3 text-gray-800 font-bold px-2">
-                    <RiPercentLine className="text-green-600" size={24} />
-                    <span>Weekly Discount!</span>
-                 </div>
-
-                 <div className="bg-indigo-600 text-white p-4 rounded-xl flex items-center gap-4 shadow-lg shadow-indigo-100">
-                    <div className="bg-white/20 p-2 rounded-lg">
-                      <IoCallOutline size={24} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] opacity-70 uppercase tracking-wider">Hotline Number</p>
-                      <p className="font-bold text-lg">+9888-256-666</p>
-                    </div>
-                 </div>
               </div>
             </motion.div>
           </>
