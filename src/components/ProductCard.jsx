@@ -37,25 +37,32 @@ const IconStar = ({ filled }) => (
 );
 
 const ProductCard = ({ product }) => {
+
+  const discountLabel = product.discountPercentage > 0 ? `${product.discountPercentage}%` : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-2xl md:rounded-3xl p-2 md:p-4 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group relative overflow-hidden h-full"
+      className="bg-white rounded-2xl md:rounded-3xl p-2 md:p-4 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group relative overflow-hidden h-full flex flex-col"
     >
       {/* Badges */}
       <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col gap-1 md:gap-2">
         {product.isNew && (
-          <span className="bg-green-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">New</span>
+          <span className="bg-green-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">
+            New
+          </span>
         )}
-        {product.discount && (
-          <span className="bg-pink-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">-{product.discount}</span>
+        {discountLabel && (
+          <span className="bg-pink-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">
+            -{discountLabel}
+          </span>
         )}
       </div>
 
-      {/* Action Icons */}
+      {/* Action Icons (Hover effects) */}
       <div className="absolute top-2 right-2 md:top-4 md:right-[-50px] md:group-hover:right-4 transition-all duration-500 z-10 flex flex-col gap-1.5 md:gap-2">
         <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
           <span className="scale-75 md:scale-100"><IconHeart /></span>
@@ -68,46 +75,57 @@ const ProductCard = ({ product }) => {
         </button>
       </div>
 
-      {/* Image Container */}
+      
       <div className="relative h-32 md:h-60 w-full overflow-hidden rounded-xl md:rounded-2xl mb-3 md:mb-4 bg-gray-50">
         <img 
-          src={product.image} 
+          src={product.thumbnail || product.singleImg} 
           alt={product.name} 
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
       </div>
 
       {/* Content Detail */}
-      <div className="px-1 md:px-2">
-        <p className="text-[8px] md:text-xs text-gray-400 font-bold mb-0.5 md:mb-1 uppercase tracking-wider">{product.category}</p>
+      <div className="px-1 md:px-2 flex flex-col flex-grow">
+        <p className="text-[8px] md:text-xs text-gray-400 font-bold mb-0.5 md:mb-1 uppercase tracking-wider">
+          {product.category}
+        </p>
         <h3 className="text-xs md:text-base font-bold text-gray-800 hover:text-green-600 cursor-pointer transition-colors mb-1 md:mb-2 line-clamp-1">
           {product.name}
         </h3>
         
-        {/* Star Rating */}
+        {/* Star Rating - math.floor*/}
+        
         <div className="flex items-center gap-0.5 md:gap-1 mb-2 md:mb-3 text-amber-400">
           {[...Array(5)].map((_, i) => (
             <span key={i} className="scale-75 md:scale-100 origin-left">
-                <IconStar filled={i < product.rating} />
+                <IconStar filled={i < Math.floor(product.rating)} />
             </span>
           ))}
-          <span className="text-gray-300 text-[9px] md:text-xs ml-0.5 md:ml-1">({product.rating}.0)</span>
+          <span className="text-gray-300 text-[9px] md:text-xs ml-0.5 md:ml-1">
+            ({product.rating})
+          </span>
         </div>
 
-        {/* Price Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:mt-4 pt-2 md:pt-4 border-t border-gray-50">
-           <div className="flex flex-wrap items-baseline gap-1">
-              <span className="text-sm md:text-xl font-black text-indigo-900">${product.price.toFixed(2)}</span>
-              {product.oldPrice && (
-                <span className="text-[10px] md:text-sm text-gray-400 line-through">${product.oldPrice.toFixed(2)}</span>
-              )}
-           </div>
-           <motion.button 
-            whileTap={{ scale: 0.9 }}
-            className="bg-green-100 text-green-600 p-2 md:p-3 rounded-lg md:rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm w-fit self-end md:self-auto"
-           >
-             <span className="scale-90 md:scale-100"><IconCart /></span>
-           </motion.button>
+        {/* Price & Cart Section */}
+        <div className="mt-auto"> 
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pt-2 md:pt-4 border-t border-gray-50">
+             <div className="flex flex-wrap items-baseline gap-1">
+                <span className="text-sm md:text-xl font-black text-indigo-900">
+                  ${product.price.toFixed(2)}
+                </span>
+                {product.oldPrice && (
+                  <span className="text-[10px] md:text-sm text-gray-400 line-through">
+                    ${product.oldPrice.toFixed(2)}
+                  </span>
+                )}
+             </div>
+             <motion.button 
+              whileTap={{ scale: 0.9 }}
+              className="bg-green-100 text-green-600 p-2 md:p-3 rounded-lg md:rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm w-fit self-end md:self-auto"
+             >
+               <span className="scale-90 md:scale-100"><IconCart /></span>
+             </motion.button>
+          </div>
         </div>
       </div>
     </motion.div>

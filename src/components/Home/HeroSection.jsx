@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+import herovideo from "/fresh-ness-hero.mp4"
+
 const HeroSection = () => {
-  // ক্যাটাগরি ডাটা
   const categories = [
     { name: "Vegetables", count: 6, icon: "🧺" },
     { name: "Fresh Fruits", count: 8, icon: "🍎" },
@@ -48,11 +49,15 @@ const HeroSection = () => {
             className="lg:col-span-2 relative rounded-[2rem] overflow-hidden group min-h-[400px]"
           >
             {/* Background Image */}
-            <img 
+            {/* <img 
               src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200" 
               alt="Organic Food" 
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+            /> */}
+            <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
+              <source src={herovideo} type="video/mp4"/>
+            </video>
+
             {/* Dark Overlay for Readability */}
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-500"></div>
 
