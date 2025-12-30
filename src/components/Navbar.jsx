@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router"; // useNavigate ইমপোর্ট করা হয়েছে
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IoSearchOutline, IoPersonOutline, IoHeartOutline,
@@ -11,17 +11,23 @@ import { RiPercentLine } from "react-icons/ri";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // সার্চ স্টেট
+  const navigate = useNavigate(); // নেভিগেট করার জন্য
+
+  // সার্চ হ্যান্ডলার ফাংশন
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      // ইউজারকে All Groceries পেজে পাঠানো হচ্ছে এবং কুয়েরি প্যারামিটারে সার্চ টেক্সট দেওয়া হচ্ছে
+      navigate(`/all-grocerice?search=${searchTerm}`);
+      setSearchTerm(""); // সার্চ শেষে ইনপুট খালি করা
+      setIsMenuOpen(false); // মোবাইল মেনু বন্ধ করা
+    }
+  };
 
   const navLinks = [
-    {
-      name: "Home",
-      path: null,
-      dropdown: [
-        { name: "Fresh Fruits", path: "/fruits" },
-        { name: "Fresh Vegetables", path: "/vegetables" },
-        { name: "Organic Food", path: "/organic" }
-      ]
-    },
+    { name: "Home", path: "/", dropdown: null },
+    { name: "All Groceries", path: "/all-grocerice", dropdown: null },
     {
       name: "Pages",
       path: null,
@@ -68,10 +74,14 @@ const Navbar = () => {
 
   return (
     <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-[100] shadow-sm">
-      {/* --- Main Header (Desktop & Mobile) --- */}
+      {/* --- Main Header --- */}
       <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
 
-        <motion.button whileTap={{ scale: 0.9 }} className="lg:hidden text-gray-800" onClick={() => setIsMenuOpen(true)}>
+        <motion.button 
+          whileTap={{ scale: 0.9 }} 
+          className="lg:hidden text-gray-800 cursor-pointer" 
+          onClick={() => setIsMenuOpen(true)}
+        >
           <IoMenuOutline size={30} />
         </motion.button>
 
@@ -79,15 +89,24 @@ const Navbar = () => {
           FreshNess
         </Link>
 
-        {/* Search Bar (Desktop) */}
-        <div className="hidden lg:flex flex-1 max-w-xl items-center border-2 border-gray-100 rounded-full focus-within:border-amber-400 transition-all ml-4 overflow-hidden">
-          <input type="text" placeholder="Search for products..." className="flex-1 px-5 py-2 outline-none text-gray-600" />
-          <button className="bg-amber-400 p-3 px-6 hover:bg-amber-500 transition-colors">
+        {/* Search Bar (Desktop) - Form ব্যবহার করা হয়েছে যাতে Enter চাপলে সার্চ হয় */}
+        <form 
+          onSubmit={handleSearch}
+          className="hidden lg:flex flex-1 max-w-xl items-center border-2 border-gray-100 rounded-full focus-within:border-amber-400 transition-all ml-4 overflow-hidden"
+        >
+          <input 
+            type="text" 
+            placeholder="Search for products..." 
+            className="flex-1 px-5 py-2 outline-none text-gray-600"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button type="submit" className="bg-amber-400 p-3 px-6 hover:bg-amber-500 transition-colors">
             <IoSearchOutline size={22} />
           </button>
-        </div>
+        </form>
 
-        {/* Action Icons */}
+        {/* Action Icons */} 
         <div className="flex items-center gap-4 md:gap-6">
           <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-green-600 hover:text-white transition-all cursor-pointer">
             <IoPersonOutline size={22} />
@@ -119,7 +138,7 @@ const Navbar = () => {
                   <div className="absolute top-full left-0 min-w-[200px] bg-white shadow-xl border border-gray-100 rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-50 p-2">
                     {link.dropdown.map((sub, sIdx) => (
                       <motion.div key={sIdx} whileHover={{ x: 5 }}>
-                        <Link to={sub.path} className="block py-2 px-3 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md">
+                        <Link to={sub.path} className="block py-2 px-3 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md ">
                           {sub.name}
                         </Link>
                       </motion.div>
@@ -136,22 +155,22 @@ const Navbar = () => {
               <span>Weekly Discount!</span>
             </motion.div>
             <div className="bg-indigo-600 text-white px-5 py-2 rounded-lg flex items-center gap-3 relative">
-               <div className="absolute -top-2 left-4 w-4 h-4 bg-indigo-600 rotate-45"></div>
-               <IoCallOutline size={22} />
-               <div className="leading-tight">
-                  <p className="text-[10px] opacity-80 uppercase font-medium">Hotline</p>
-                  <p className="font-bold">+9888-256-666</p>
-               </div>
+                <div className="absolute -top-2 left-4 w-4 h-4 bg-indigo-600 rotate-45"></div>
+                <IoCallOutline size={22} />
+                <div className="leading-tight">
+                   <p className="text-[10px] opacity-80 uppercase font-medium">Hotline</p>
+                   <p className="font-bold">+9888-256-666</p>
+                </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* --- Mobile Sidebar (Improved) --- */}
+      {/* --- Mobile Sidebar --- */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMenuOpen(false)} className="fixed inset-0 bg-black/50 z-200 lg:hidden" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMenuOpen(false)} className="fixed inset-0 bg-black/50 z-[200] lg:hidden" />
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
@@ -166,13 +185,19 @@ const Navbar = () => {
                 <button onClick={() => setIsMenuOpen(false)}><IoCloseOutline size={30} /></button>
               </div>
 
-              {/* Sidebar Content (Scrollable Area) */}
+              {/* Sidebar Content */}
               <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                {/* Mobile Search */}
-                <div className="flex border border-gray-200 rounded-lg overflow-hidden mb-6">
-                  <input type="text" placeholder="Search..." className="flex-1 px-3 py-2 outline-none text-sm" />
-                  <button className="bg-amber-400 px-3"><IoSearchOutline /></button>
-                </div>
+                {/* Mobile Search Form */}
+                <form onSubmit={handleSearch} className="flex border border-gray-200 rounded-lg overflow-hidden mb-6">
+                  <input 
+                    type="text" 
+                    placeholder="Search..." 
+                    className="flex-1 px-3 py-2 outline-none text-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <button type="submit" className="bg-amber-400 px-3"><IoSearchOutline /></button>
+                </form>
 
                 <ul className="space-y-1 mb-10">
                   {navLinks.map((link, idx) => (
@@ -189,7 +214,7 @@ const Navbar = () => {
                         {link.dropdown && activeDropdown === idx && (
                           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-gray-50 rounded-lg">
                             {link.dropdown.map((sub, sIdx) => (
-                              <Link key={sIdx} to={sub.path} onClick={() => setIsMenuOpen(false)} className="block py-3 px-4 text-sm text-gray-600 hover:text-green-600 border-l-2 border-transparent hover:border-green-600 transition-all">
+                              <Link key={sIdx} to={sub.path} onClick={() => setIsMenuOpen(false)} className="block py-3 px-4 text-sm text-gray-600 hover:text-green-600 border-l-2 border-transparent hover:border-green-600 transition-all font-semibold">
                                 {sub.name}
                               </Link>
                             ))}
@@ -201,7 +226,7 @@ const Navbar = () => {
                 </ul>
               </div>
 
-              {/* Sidebar Bottom (Fixed at Bottom) */}
+              {/* Sidebar Bottom */}
               <div className="p-4 border-t border-gray-100 bg-gray-50 shrink-0 space-y-4">
                  <div className="flex items-center gap-3 text-gray-800 font-bold px-2">
                     <RiPercentLine className="text-green-600" size={24} />
