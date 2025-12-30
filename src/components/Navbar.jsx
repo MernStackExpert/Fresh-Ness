@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router"; // useLocation যোগ করা হয়েছে
+import { Link, useNavigate, useLocation } from "react-router"; 
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IoSearchOutline, IoPersonOutline, IoHeartOutline,
@@ -12,22 +12,18 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
-  const [cartCount, setCartCount] = useState(0); // কার্ট কাউন্ট স্টেট
+  const [cartCount, setCartCount] = useState(0); 
   
   const navigate = useNavigate();
-  const location = useLocation(); // বর্তমান পাথ চেক করার জন্য
-
-  // ১. কার্ট কাউন্ট আপডেট করার লজিক
+  const location = useLocation(); 
   const updateCartCount = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    // মোট আইটেমের সংখ্যা অথবা কোয়ান্টিটির যোগফল নিতে পারেন
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     setCartCount(totalItems);
   };
 
   useEffect(() => {
     updateCartCount();
-    // অন্য পেজ থেকে কার্ট আপডেট হলে যেন এখানেও আপডেট হয়
     window.addEventListener("storage", updateCartCount);
     return () => window.removeEventListener("storage", updateCartCount);
   }, []);
@@ -111,7 +107,6 @@ const Navbar = () => {
                 <IoHeartOutline size={26} />
                 <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
             </div>
-            {/* ডাইনামিক কার্ট কাউন্ট */}
             <Link to="/cart" className="relative cursor-pointer hover:text-green-600 transition-colors">
                 <IoCartOutline size={26} />
                 <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">

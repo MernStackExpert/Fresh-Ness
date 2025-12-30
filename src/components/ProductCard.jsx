@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
+import toast from "react-hot-toast";
 
-// --- Internal Icons for Portability ---
 const IconCart = () => (
   <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
     <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
@@ -16,18 +16,18 @@ const IconHeart = () => (
   </svg>
 );
 
-const IconEye = () => (
-  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-    <circle cx="12" cy="12" r="3"></circle>
-  </svg>
-);
-
 const IconSync = () => (
   <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
     <polyline points="23 4 23 10 17 10"></polyline>
     <polyline points="1 20 1 14 7 14"></polyline>
     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+  </svg>
+);
+
+const IconEye = () => (
+  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
   </svg>
 );
 
@@ -38,8 +38,42 @@ const IconStar = ({ filled }) => (
 );
 
 const ProductCard = ({ product }) => {
-
   const discountLabel = product.discountPercentage > 0 ? `${product.discountPercentage}%` : null;
+
+  const handleAddToCart = () => {
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartItem = {
+      cartId: `${product._id}-default`,
+      productId: product._id,
+      name: product.name,
+      image: product.thumbnail || product.singleImg,
+      price: product.price,
+      unit: "Standard",
+      quantity: 1,
+      category: product.category
+    };
+
+    const existingItemIndex = existingCart.findIndex(item => item.cartId === cartItem.cartId);
+
+    if (existingItemIndex > -1) {
+      existingCart[existingItemIndex].quantity += 1;
+    } else {
+      existingCart.push(cartItem);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(existingCart));
+    
+    toast.success(`${product.name} added to cart!`, {
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+      position: "top-center"
+    });
+
+    window.dispatchEvent(new Event("storage"));
+  };
 
   return (
     <motion.div
@@ -49,34 +83,27 @@ const ProductCard = ({ product }) => {
       transition={{ duration: 0.5 }}
       className="bg-white rounded-2xl md:rounded-3xl p-2 md:p-4 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group relative overflow-hidden h-full flex flex-col"
     >
-      {/* Badges */}
       <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col gap-1 md:gap-2">
         {product.isNew && (
-          <span className="bg-green-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">
-            New
-          </span>
+          <span className="bg-green-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">New</span>
         )}
         {discountLabel && (
-          <span className="bg-pink-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">
-            -{discountLabel}
-          </span>
+          <span className="bg-pink-500 text-white text-[8px] md:text-[10px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase shadow-sm">-{discountLabel}</span>
         )}
       </div>
 
-      {/* Action Icons (Hover effects) */}
       <div className="absolute top-2 right-2 md:top-4 md:right-[-50px] md:group-hover:right-4 transition-all duration-500 z-10 flex flex-col gap-1.5 md:gap-2">
-        <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
+        <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all cursor-pointer">
           <span className="scale-75 md:scale-100"><IconHeart /></span>
         </button>
-        <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
+        <button className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all cursor-pointer">
           <span className="scale-75 md:scale-100"><IconSync /></span>
         </button>
-        <Link to={`/detailes/${product._id}`} className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all">
+        <Link to={`/detailes/${product._id}`} className="w-7 h-7 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-gray-600 hover:bg-green-600 hover:text-white transition-all cursor-pointer">
           <span className="scale-75 md:scale-100"><IconEye /></span>
         </Link>
       </div>
 
-      
       <div className="relative h-32 md:h-60 w-full overflow-hidden rounded-xl md:rounded-2xl mb-3 md:mb-4 bg-gray-50">
         <img 
           src={product.thumbnail || product.singleImg} 
@@ -85,16 +112,13 @@ const ProductCard = ({ product }) => {
         />
       </div>
 
-      {/* Content Detail */}
       <div className="px-1 md:px-2 flex flex-col flex-grow">
-        <p className="text-[8px] md:text-xs text-gray-400 font-bold mb-0.5 md:mb-1 uppercase tracking-wider">
-          {product.category}
-        </p>
-        <h3 className="text-xs md:text-base font-bold text-gray-800 hover:text-green-600 cursor-pointer transition-colors mb-1 md:mb-2 line-clamp-1">
-          {product.name}
-        </h3>
-        
-        {/* Star Rating - math.floor*/}
+        <p className="text-[8px] md:text-xs text-gray-400 font-bold mb-0.5 md:mb-1 uppercase tracking-wider">{product.category}</p>
+        <Link to={`/detailes/${product._id}`}>
+          <h3 className="text-xs md:text-base font-bold text-gray-800 hover:text-green-600 cursor-pointer transition-colors mb-1 md:mb-2 line-clamp-1">
+            {product.name}
+          </h3>
+        </Link>
         
         <div className="flex items-center gap-0.5 md:gap-1 mb-2 md:mb-3 text-amber-400">
           {[...Array(5)].map((_, i) => (
@@ -102,27 +126,22 @@ const ProductCard = ({ product }) => {
                 <IconStar filled={i < Math.floor(product.rating)} />
             </span>
           ))}
-          <span className="text-gray-300 text-[9px] md:text-xs ml-0.5 md:ml-1">
-            ({product.rating})
-          </span>
+          <span className="text-gray-300 text-[9px] md:text-xs ml-0.5 md:ml-1">({product.rating})</span>
         </div>
 
-        {/* Price & Cart Section */}
         <div className="mt-auto"> 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pt-2 md:pt-4 border-t border-gray-50">
              <div className="flex flex-wrap items-baseline gap-1">
-                <span className="text-sm md:text-xl font-black text-indigo-900">
-                  ${product.price.toFixed(2)}
-                </span>
+                <span className="text-sm md:text-xl font-black text-indigo-900">${product.price.toFixed(2)}</span>
                 {product.oldPrice && (
-                  <span className="text-[10px] md:text-sm text-gray-400 line-through">
-                    ${product.oldPrice.toFixed(2)}
-                  </span>
+                  <span className="text-[10px] md:text-sm text-gray-400 line-through">${product.oldPrice.toFixed(2)}</span>
                 )}
              </div>
+             
              <motion.button 
+              onClick={handleAddToCart}
               whileTap={{ scale: 0.9 }}
-              className="bg-green-100 text-green-600 p-2 md:p-3 rounded-lg md:rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm w-fit self-end md:self-auto"
+              className="bg-green-100 text-green-600 p-2 md:p-3 rounded-lg md:rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm w-fit self-end md:self-auto cursor-pointer"
              >
                <span className="scale-90 md:scale-100"><IconCart /></span>
              </motion.button>
