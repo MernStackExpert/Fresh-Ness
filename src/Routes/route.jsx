@@ -6,6 +6,7 @@ import Contact from "../pages/Contact";
 import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
 
+
 export const route = createBrowserRouter([
   {
     path:"/",
@@ -30,7 +31,7 @@ export const route = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart/>
-      },
+      }
     ]
   }
 ])

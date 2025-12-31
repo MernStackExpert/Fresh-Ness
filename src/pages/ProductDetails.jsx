@@ -50,7 +50,7 @@ const ProductDetails = () => {
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     
     const cartItem = {
-      cartId: `${product._id}-${selectedVariant?.unit || 'default'}`,
+      cartId: `${product._id}-default`,
       productId: product._id,
       name: product.name,
       image: product.singleImg,
@@ -59,6 +59,7 @@ const ProductDetails = () => {
       quantity: quantity,
       category: product.category
     };
+
 
     const existingItemIndex = existingCart.findIndex(item => item.cartId === cartItem.cartId);
 

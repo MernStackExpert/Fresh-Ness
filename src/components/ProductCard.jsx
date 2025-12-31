@@ -53,6 +53,8 @@ const ProductCard = ({ product }) => {
       category: product.category
     };
 
+    console.log(existingCart)
+
     const existingItemIndex = existingCart.findIndex(item => item.cartId === cartItem.cartId);
 
     if (existingItemIndex > -1) {

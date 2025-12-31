@@ -8,24 +8,36 @@ import {
 } from "react-icons/io5";
 import { RiPercentLine } from "react-icons/ri";
 
+
+const getCartCountFromStorage = () => {
+  if (typeof window === "undefined") return 0;
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  return cart.reduce((acc, item) => acc + item.quantity, 0);
+};
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
-  const [cartCount, setCartCount] = useState(0); 
+  
+  const [cartCount, setCartCount] = useState(() => getCartCountFromStorage()); 
   
   const navigate = useNavigate();
   const location = useLocation(); 
-  const updateCartCount = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-    setCartCount(totalItems);
-  };
 
   useEffect(() => {
-    updateCartCount();
-    window.addEventListener("storage", updateCartCount);
-    return () => window.removeEventListener("storage", updateCartCount);
+    const handleStorageChange = () => {
+      setCartCount(getCartCountFromStorage());
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    
+    window.addEventListener("cart-updated", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("cart-updated", handleStorageChange);
+    };
   }, []);
 
   const handleSearch = (e) => {
