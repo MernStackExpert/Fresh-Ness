@@ -144,7 +144,7 @@ const Cart = () => {
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
-                    />
+                    />;
                   </div>
 
                   <div className="flex-1">
@@ -219,9 +219,9 @@ const Cart = () => {
                 </div>
               </div>
 
-              <button className="w-full bg-green-600 text-white py-4 rounded-xl font-black hover:bg-green-700 transition mb-4 cursor-pointer">
+              <Link to="/checkout" className="w-full block text-center bg-green-600 text-white py-4 rounded-xl font-black hover:bg-green-700 transition mb-4 cursor-pointer">
                 Checkout Now
-              </button>
+              </Link>
 
               <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400">
                 <IoShieldCheckmarkOutline className="text-green-500" />

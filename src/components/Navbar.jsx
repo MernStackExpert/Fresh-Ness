@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router"; 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import {
   IoSearchOutline, IoPersonOutline, IoHeartOutline,
   IoCartOutline, IoSyncOutline, IoMenuOutline,
   IoCallOutline, IoChevronDownOutline, IoCloseOutline
 } from "react-icons/io5";
 import { RiPercentLine } from "react-icons/ri";
-
 
 const getCartCountFromStorage = () => {
   if (typeof window === "undefined") return 0;
@@ -19,21 +18,28 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
-  
+  const [isVisible, setIsVisible] = useState(true);
   const [cartCount, setCartCount] = useState(() => getCartCountFromStorage()); 
   
   const navigate = useNavigate();
   const location = useLocation(); 
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    if (latest > previous && latest > 150) {
+      setIsVisible(false);
+    } else {
+      setIsVisible(true);
+    }
+  });
 
   useEffect(() => {
     const handleStorageChange = () => {
       setCartCount(getCartCountFromStorage());
     };
-
     window.addEventListener("storage", handleStorageChange);
-    
     window.addEventListener("cart-updated", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("cart-updated", handleStorageChange);
@@ -73,117 +79,124 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-[100] shadow-sm">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
+    <>
+      <motion.header 
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
+        animate={isVisible ? "visible" : "hidden"}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="fixed top-0 left-0 w-full bg-white border-b border-gray-100 z-[100] shadow-sm"
+      >
+        <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
+          <motion.button 
+            whileTap={{ scale: 0.9 }} 
+            className="lg:hidden text-gray-800 cursor-pointer" 
+            onClick={() => setIsMenuOpen(true)}
+          >
+            <IoMenuOutline size={30} />
+          </motion.button>
 
-        <motion.button 
-          whileTap={{ scale: 0.9 }} 
-          className="lg:hidden text-gray-800 cursor-pointer" 
-          onClick={() => setIsMenuOpen(true)}
-        >
-          <IoMenuOutline size={30} />
-        </motion.button>
+          <Link to="/" className="text-2xl md:text-3xl lg:text-4xl font-bold text-indigo-800 italic shrink-0" style={{ fontFamily: 'cursive' }}>
+            FreshNess
+          </Link>
 
-        <Link to="/" className="text-2xl md:text-3xl lg:text-4xl font-bold text-indigo-800 italic shrink-0" style={{ fontFamily: 'cursive' }}>
-          FreshNess
-        </Link>
+          <form 
+            onSubmit={handleSearch}
+            className="hidden lg:flex flex-1 max-w-xl items-center border-2 border-gray-100 rounded-full focus-within:border-amber-400 transition-all ml-4 overflow-hidden"
+          >
+            <input 
+              type="text" 
+              placeholder="Search for products..." 
+              className="flex-1 px-5 py-2 outline-none text-gray-600"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button type="submit" className="bg-amber-400 p-3 px-6 hover:bg-amber-500 transition-colors">
+              <IoSearchOutline size={22} />
+            </button>
+          </form>
 
-        {/* Search Bar */}
-        <form 
-          onSubmit={handleSearch}
-          className="hidden lg:flex flex-1 max-w-xl items-center border-2 border-gray-100 rounded-full focus-within:border-amber-400 transition-all ml-4 overflow-hidden"
-        >
-          <input 
-            type="text" 
-            placeholder="Search for products..." 
-            className="flex-1 px-5 py-2 outline-none text-gray-600"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button type="submit" className="bg-amber-400 p-3 px-6 hover:bg-amber-500 transition-colors">
-            <IoSearchOutline size={22} />
-          </button>
-        </form>
-
-        {/* Action Icons */} 
-        <div className="flex items-center gap-4 md:gap-6">
-          <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-green-600 hover:text-white transition-all cursor-pointer">
-            <IoPersonOutline size={22} />
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative cursor-pointer hover:text-green-600 transition-colors">
-                <IoSyncOutline size={26} />
-                <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-green-600 hover:text-white transition-all cursor-pointer">
+              <IoPersonOutline size={22} />
             </div>
-            <div className="relative cursor-pointer hover:text-green-600 transition-colors">
-                <IoHeartOutline size={26} />
-                <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
-            </div>
-            <Link to="/cart" className="relative cursor-pointer hover:text-green-600 transition-colors">
-                <IoCartOutline size={26} />
-                <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
-                    {cartCount}
-                </span>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* --- Desktop Bottom Navigation --- */}
-      <nav className="hidden lg:block border-t border-gray-100">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <ul className="flex items-center gap-8 font-semibold text-gray-700">
-            {navLinks.map((link, idx) => (
-              <li key={idx} className="relative group py-5">
-                {link.path ? (
-                  <Link 
-                    to={link.path} 
-                    className={`flex items-center gap-1 transition-colors cursor-pointer ${location.pathname === link.path ? "text-green-600" : "hover:text-green-600"}`}
-                  >
-                    {link.name}
-                  </Link>
-                ) : (
-                  <span className="flex items-center gap-1 hover:text-green-600 transition-colors cursor-pointer">
-                    {link.name} {link.dropdown && <IoChevronDownOutline className="text-sm group-hover:rotate-180 transition-transform duration-300" />}
+            <div className="flex items-center gap-4">
+              <div className="relative cursor-pointer hover:text-green-600 transition-colors">
+                  <IoSyncOutline size={26} />
+                  <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
+              </div>
+              <div className="relative cursor-pointer hover:text-green-600 transition-colors">
+                  <IoHeartOutline size={26} />
+                  <span className="absolute -top-2 -right-2 bg-amber-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">0</span>
+              </div>
+              <Link to="/cart" className="relative cursor-pointer hover:text-green-600 transition-colors">
+                  <IoCartOutline size={26} />
+                  <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                      {cartCount}
                   </span>
-                )}
-                
-                {link.dropdown && (
-                  <div className="absolute top-full left-0 min-w-[200px] bg-white shadow-xl border border-gray-100 rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-50 p-2">
-                    {link.dropdown.map((sub, sIdx) => (
-                      <motion.div key={sIdx} whileHover={{ x: 5 }}>
-                        <Link 
-                            to={sub.path} 
-                            className={`block py-2 px-3 text-sm rounded-md ${location.pathname === sub.path ? "text-green-600 bg-green-50" : "text-gray-600 hover:text-green-600 hover:bg-green-50"}`}
-                        >
-                          {sub.name}
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-8">
-            <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="flex items-center gap-2 text-gray-800 font-bold">
-              <RiPercentLine className="text-green-600" size={20} />
-              <span>Weekly Discount!</span>
-            </motion.div>
-            <div className="bg-indigo-600 text-white px-5 py-2 rounded-lg flex items-center gap-3 relative">
-                <div className="absolute -top-2 left-4 w-4 h-4 bg-indigo-600 rotate-45"></div>
-                <IoCallOutline size={22} />
-                <div className="leading-tight">
-                   <p className="text-[10px] opacity-80 uppercase font-medium">Hotline</p>
-                   <p className="font-bold">+9888-256-666</p>
-                </div>
+              </Link>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* --- Mobile Sidebar --- */}
+        <nav className="hidden lg:block border-t border-gray-100 bg-white">
+          <div className="container mx-auto px-4 flex items-center justify-between">
+            <ul className="flex items-center gap-8 font-semibold text-gray-700">
+              {navLinks.map((link, idx) => (
+                <li key={idx} className="relative group py-5">
+                  {link.path ? (
+                    <Link 
+                      to={link.path} 
+                      className={`flex items-center gap-1 transition-colors ${location.pathname === link.path ? "text-green-600" : "hover:text-green-600"}`}
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <span className="flex items-center gap-1 hover:text-green-600 transition-colors cursor-pointer">
+                      {link.name} {link.dropdown && <IoChevronDownOutline className="text-sm group-hover:rotate-180 transition-transform duration-300" />}
+                    </span>
+                  )}
+                  
+                  {link.dropdown && (
+                    <div className="absolute top-full left-0 min-w-[200px] bg-white shadow-xl border border-gray-100 rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-50 p-2">
+                      {link.dropdown.map((sub, sIdx) => (
+                        <motion.div key={sIdx} whileHover={{ x: 5 }}>
+                          <Link 
+                              to={sub.path} 
+                              className={`block py-2 px-3 text-sm rounded-md ${location.pathname === sub.path ? "text-green-600 bg-green-50" : "text-gray-600 hover:text-green-600 hover:bg-green-50"}`}
+                          >
+                            {sub.name}
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center gap-8">
+              <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="flex items-center gap-2 text-gray-800 font-bold">
+                <RiPercentLine className="text-green-600" size={20} />
+                <span>Weekly Discount!</span>
+              </motion.div>
+              <div className="bg-indigo-600 text-white px-5 py-2 rounded-lg flex items-center gap-3 relative">
+                  <div className="absolute -top-2 left-4 w-4 h-4 bg-indigo-600 rotate-45"></div>
+                  <IoCallOutline size={22} />
+                  <div className="leading-tight">
+                     <p className="text-[10px] opacity-80 uppercase font-medium">Hotline</p>
+                     <p className="font-bold">+880 1908716502</p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </motion.header>
+
+      <div className="h-20 lg:h-[145px]"></div>
+
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -199,8 +212,8 @@ const Navbar = () => {
                 <button onClick={() => setIsMenuOpen(false)}><IoCloseOutline size={30} /></button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                <form onSubmit={handleSearch} className="flex border border-gray-200 rounded-lg overflow-hidden mb-6">
+              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col">
+                <form onSubmit={handleSearch} className="flex border border-gray-200 rounded-lg overflow-hidden mb-6 shrink-0">
                   <input 
                     type="text" 
                     placeholder="Search..." 
@@ -211,7 +224,7 @@ const Navbar = () => {
                   <button type="submit" className="bg-amber-400 px-3"><IoSearchOutline /></button>
                 </form>
 
-                <ul className="space-y-1 mb-10">
+                <ul className="space-y-1 mb-6">
                   {navLinks.map((link, idx) => (
                     <li key={idx} className="border-b border-gray-50 pb-2">
                       <div
@@ -239,12 +252,32 @@ const Navbar = () => {
                     </li>
                   ))}
                 </ul>
+
+                <div className="mt-auto pt-6 border-t border-gray-100 space-y-5 pb-4">
+                    <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="flex items-center gap-3 text-gray-800 font-bold">
+                        <div className="bg-green-100 p-2 rounded-full">
+                            <RiPercentLine className="text-green-600" size={20} />
+                        </div>
+                        <span>Weekly Discount!</span>
+                    </motion.div>
+
+                    <div className="bg-indigo-600 text-white px-5 py-4 rounded-xl flex items-center gap-4 relative overflow-hidden">
+                        <div className="absolute -top-2 left-4 w-4 h-4 bg-indigo-600 rotate-45"></div>
+                        <div className="bg-white/20 p-2 rounded-lg">
+                            <IoCallOutline size={24} />
+                        </div>
+                        <div className="leading-tight">
+                            <p className="text-[11px] opacity-80 uppercase font-medium tracking-wider">Hotline 24/7</p>
+                            <p className="font-bold text-lg">+880 1908716502</p>
+                        </div>
+                    </div>
+                </div>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
 
