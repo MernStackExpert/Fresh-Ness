@@ -8,6 +8,7 @@ import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../components/CheckoutForm";
+import axiosInstance from "../utils/axiosInstance";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -61,7 +62,7 @@ const Checkout = () => {
       };
 
       try {
-        const response = await axios.post("http://localhost:3000/orders/", orderData);
+        const response = await axiosInstance.post("/orders/", orderData);
         
         if (response.status === 201) {
           localStorage.removeItem("cart");

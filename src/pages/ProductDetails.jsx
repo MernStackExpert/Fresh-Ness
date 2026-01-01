@@ -261,7 +261,8 @@ const ProductDetails = () => {
                 onClick={handleAddToCart}
                 className="flex-1 bg-green-600 text-white h-14 rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-lg shadow-green-100 hover:bg-green-700 transition-all uppercase tracking-widest"
               >
-                <IoCartOutline size={24} /> Add to Cart
+                <IoCartOutline size={24} /> 
+                <span className="hidden md:block">Add to Cart</span>
               </motion.button>
 
               <div className="flex gap-2">

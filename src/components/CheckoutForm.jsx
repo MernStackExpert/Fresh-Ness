@@ -3,6 +3,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import axiosInstance from "../utils/axiosInstance";
 
 const CheckoutForm = ({ total, formData, cartItems }) => {
   const stripe = useStripe();
@@ -22,7 +23,7 @@ const CheckoutForm = ({ total, formData, cartItems }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("http://localhost:3000/create-payment-intent", {
+      const { data } = await axiosInstance.post("/create-payment-intent", {
         total,
         email: formData.email,
       });
@@ -54,7 +55,7 @@ const CheckoutForm = ({ total, formData, cartItems }) => {
           shippingAddress: formData,
         };
 
-        const orderResponse = await axios.post("http://localhost:3000/orders/", orderInfo);
+        const orderResponse = await axiosInstance.post("/orders/", orderInfo);
 
         if (orderResponse.status === 201) {
           localStorage.removeItem("cart");

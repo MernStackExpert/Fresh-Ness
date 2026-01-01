@@ -1,19 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
+import axios from "axios";
 import herovideo from "/fresh-ness-hero.mp4";
+import axiosInstance from "../../utils/axiosInstance";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const [categoryCounts, setCategoryCounts] = useState({});
 
   const categories = [
-    { name: "Vegetables", count: 6, icon: "🧺", slug: "Vegetables" },
-    { name: "Fresh Fruits", count: 8, icon: "🍎", slug: "Fruits" },
-    { name: "Desserts", count: 9, icon: "🧁", slug: "Dairy" },
-    { name: "Drinks & Juice", count: 6, icon: "🧃", slug: "Beverages" },
-    { name: "Fish & Meats", count: 6, icon: "🐟", slug: "Meats" },
-    { name: "Pets & Animals", count: 4, icon: "🐶", slug: "Pets" },
+    { name: "Vegetables", icon: "🧺", slug: "Vegetables" },
+    { name: "Fresh Fruits", icon: "🍎", slug: "Fruits" },
+    { name: "Desserts", icon: "🧁", slug: "Dairy" },
+    { name: "Drinks & Juice", icon: "🧃", slug: "Beverages" },
+    { name: "Fish & Meats", icon: "🐟", slug: "Meats" },
+    { name: "Pets & Animals", icon: "🐶", slug: "Pets" },
   ];
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const response = await axiosInstance.get("/products?limit=1000");
+        const allProducts = response.data.products;
+
+        const counts = allProducts.reduce((acc, product) => {
+          acc[product.category] = (acc[product.category] || 0) + 1;
+          return acc;
+        }, {});
+
+        setCategoryCounts(counts);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
 
   const handleCategoryClick = (categorySlug) => {
     navigate(`/all-grocerice?category=${categorySlug}`);
@@ -23,25 +46,28 @@ const HeroSection = () => {
     <section className="bg-white py-6 md:py-10">
       <div className="container mx-auto px-4">
         <div className="flex overflow-x-auto lg:overflow-visible items-center justify-between gap-6 pb-10 custom-scrollbar">
-          {categories.map((cat, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ y: -5 }}
-              onClick={() => handleCategoryClick(cat.slug)}
-              className="flex items-center gap-3 min-w-max cursor-pointer group"
-            >
-              <div className="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center text-2xl group-hover:bg-indigo-100 transition-colors">
-                {cat.icon}
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-800 text-sm">{cat.name}</h4>
-                <p className="text-xs text-gray-400">{cat.count} Products</p>
-              </div>
-              {idx !== categories.length - 1 && (
-                <div className="hidden lg:block h-6 w-[1px] bg-gray-100 ml-4"></div>
-              )}
-            </motion.div>
-          ))}
+          {categories.map((cat, idx) => {
+            const dynamicCount = categoryCounts[cat.slug] || 0;
+            return (
+              <motion.div
+                key={idx}
+                whileHover={{ y: -5 }}
+                onClick={() => handleCategoryClick(cat.slug)}
+                className="flex items-center gap-3 min-w-max cursor-pointer group"
+              >
+                <div className="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center text-2xl group-hover:bg-indigo-100 transition-colors">
+                  {cat.icon}
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-800 text-sm">{cat.name}</h4>
+                  <p className="text-xs text-gray-400">{dynamicCount} Products</p>
+                </div>
+                {idx !== categories.length - 1 && (
+                  <div className="hidden lg:block h-6 w-[1px] bg-gray-100 ml-4"></div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-auto lg:h-[600px]">

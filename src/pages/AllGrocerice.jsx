@@ -5,6 +5,7 @@ import {
   IoFilterOutline, IoSearchOutline, IoCloseCircleOutline, 
   IoChevronBack, IoChevronForward, IoPricetagOutline 
 } from "react-icons/io5";
+import axiosInstance from "../utils/axiosInstance";
 
 const AllGroceries = () => {
   const navigate = useNavigate();
@@ -30,23 +31,32 @@ const AllGroceries = () => {
     setSearchQuery(currentSearch);
   }, [location.search]);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const url = `http://localhost:3000/products?search=${searchQuery}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&sortBy=${sortBy}&order=${order}&page=${page}&limit=${limit}`;
-      
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      setProducts(data.products || []);
-      setTotalProducts(data.totalProducts || 0);
-      setTotalPages(data.totalPages || 1);
-    } catch (error) {
-      console.error("Fetch Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchProducts = async () => {
+  try {
+    setLoading(true);
+    const response = await axiosInstance.get("/products", {
+      params: {
+        search: searchQuery,
+        category: category,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        sortBy: sortBy,
+        order: order,
+        page: page,
+        limit: limit,
+      },
+    });
+    const data = response.data;
+
+    setProducts(data.products || []);
+    setTotalProducts(data.totalProducts || 0);
+    setTotalPages(data.totalPages || 1);
+  } catch (error) {
+    console.error("Fetch Error:", error.response?.data || error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     const timer = setTimeout(() => {
