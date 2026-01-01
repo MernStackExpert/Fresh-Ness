@@ -7,6 +7,8 @@ import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import OrderSuccess from "../pages/OrderSuccess";
+import Registration from "../pages/Registration";
+import Login from "../pages/Login";
 
 
 export const route = createBrowserRouter([
@@ -41,6 +43,14 @@ export const route = createBrowserRouter([
       {
         path: "/order-success",
         element: <OrderSuccess/>
+      },
+      {
+        path: "/registration",
+        element: <Registration/>
+      },
+      {
+        path: "/login",
+        element: <Login/>
       }
     ]
   }
