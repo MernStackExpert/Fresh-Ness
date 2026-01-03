@@ -19,8 +19,11 @@ import ManageProducts from "../pages/Dashboard/Admin/ManageProducts";
 import AdminProductDetails from "../pages/Dashboard/Admin/AdminProductDetails";
 import AddProduct from "../pages/Dashboard/Admin-manger/AddProduct";
 import UpdateProduct from "../pages/Dashboard/Admin-manger/UpdateProduct";
-import ManageOrders from "../pages/Dashboard/Admin-manger/ManageOrders";
 import OrderDetails from "../pages/Dashboard/Admin-manger/OrderDetails";
+import ManageOrders from "../pages/Dashboard/Admin-manger/Orders/ManageOrders";
+import ShippedOrders from "../pages/Dashboard/Admin-manger/Orders/ShippedOrders";
+import DeliveredOrders from "../pages/Dashboard/Admin-manger/Orders/DeliveredOrders";
+import CancelledOrders from "../pages/Dashboard/Admin-manger/Orders/CancelledOrders";
 
 export const route = createBrowserRouter([
   {
@@ -108,6 +111,18 @@ export const route = createBrowserRouter([
       {
         path: "manage-orders",
         element: <ManageOrders />,
+      },
+      {
+        path: "shipped-orders",
+        element: <ShippedOrders />,
+      },
+      {
+        path: "delivered-orders",
+        element: <DeliveredOrders />,
+      },
+      {
+        path: "cancelled-orders",
+        element: <CancelledOrders />,
       },
       {
         path: "admin/order-details/:id",

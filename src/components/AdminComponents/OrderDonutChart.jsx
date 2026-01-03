@@ -1,7 +1,7 @@
 import React from "react";
 
 const OrderDonutChart = ({ orders }) => {
-  const delivered = orders.filter(o => o.orderStatus === "shipped").length;
+  const delivered = orders.filter(o => o.orderStatus === "delivered").length;
   const pending = orders.filter(o => o.orderStatus === "pending").length;
   const cancelled = orders.filter(o => o.orderStatus === "cancelled").length;
   const total = orders.length;
