@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FiUsers,
-  FiShoppingBag,
-  FiDollarSign,
-  FiBox,
-} from "react-icons/fi";
+import { FiUsers, FiShoppingBag, FiDollarSign, FiBox } from "react-icons/fi";
 import axiosInstance from "../../../utils/axiosInstance";
 import RevenueDonutChart from "../../../components/AdminComponents/RevenueDonutChart";
 import UserProgressChart from "../../../components/AdminComponents/UserProgressChart";
@@ -34,7 +29,7 @@ const AdminStats = () => {
         const allOrders = orderRes.data.orders || [];
 
         const totalRevenue = allOrders
-          .filter(order => order.paymentStatus === "paid")
+          .filter((order) => order.paymentStatus === "paid")
           .reduce((sum, order) => sum + (order.total || 0), 0);
 
         setOrders(allOrders);

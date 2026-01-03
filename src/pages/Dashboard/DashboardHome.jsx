@@ -10,13 +10,13 @@ const DashboardHome = () => {
   const [dbUser, setDbUser] = useState(null);
   const [fetching, setFetching] = useState(true);
 
-  
-
   useEffect(() => {
     const getRoleBasedData = async () => {
       if (!authLoading && firebaseUser?.email) {
         try {
-          const response = await axiosInstance.get(`/users?email=${firebaseUser.email}`);
+          const response = await axiosInstance.get(
+            `/users?email=${firebaseUser.email}`
+          );
           if (response.data.result?.length > 0) {
             setDbUser(response.data.result[0]);
           }
@@ -48,10 +48,12 @@ const DashboardHome = () => {
       {dbUser?.role === "admin" && <AdminStats dbUser={dbUser} />}
       {dbUser?.role === "manager" && <ManagerStats dbUser={dbUser} />}
       {dbUser?.role === "user" && <UserStats dbUser={dbUser} />}
-      
+
       {!dbUser && (
         <div className="text-center py-20">
-          <h2 className="text-2xl font-bold text-gray-400">User data not found</h2>
+          <h2 className="text-2xl font-bold text-gray-400">
+            User data not found
+          </h2>
         </div>
       )}
     </div>

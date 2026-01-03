@@ -59,8 +59,12 @@ const HeroSection = () => {
                   {cat.icon}
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-800 text-sm">{cat.name}</h4>
-                  <p className="text-xs text-gray-400">{dynamicCount} Products</p>
+                  <h4 className="font-bold text-gray-800 text-sm">
+                    {cat.name}
+                  </h4>
+                  <p className="text-xs text-gray-400">
+                    {dynamicCount} Products
+                  </p>
                 </div>
                 {idx !== categories.length - 1 && (
                   <div className="hidden lg:block h-6 w-[1px] bg-gray-100 ml-4"></div>

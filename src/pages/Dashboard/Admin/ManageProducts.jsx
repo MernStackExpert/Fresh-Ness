@@ -77,7 +77,10 @@ const ManageProducts = () => {
                 Total Products Found: {products.length}
               </p>
             </div>
-            <Link to="/dashboard/admin-manger/add-products" className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-md active:scale-95">
+            <Link
+              to="/dashboard/admin-manger/add-products"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-md active:scale-95"
+            >
               <FaPlus /> Add New Product
             </Link>
           </div>
@@ -193,7 +196,10 @@ const ManageProducts = () => {
                         >
                           <FaEye size={18} />
                         </Link>
-                        <Link to={`/dashboard/admin/update-product/${product._id}`} className="text-amber-500 hover:text-amber-700">
+                        <Link
+                          to={`/dashboard/admin/update-product/${product._id}`}
+                          className="text-amber-500 hover:text-amber-700"
+                        >
                           <FaEdit size={18} />
                         </Link>
                         <button

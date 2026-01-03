@@ -30,15 +30,16 @@ const CheckoutForm = ({ total, formData, cartItems }) => {
 
       const clientSecret = data.clientSecret;
 
-      const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: card,
-          billing_details: {
-            name: formData.fullName,
-            email: formData.email,
+      const { paymentIntent, error: confirmError } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: card,
+            billing_details: {
+              name: formData.fullName,
+              email: formData.email,
+            },
           },
-        },
-      });
+        });
 
       if (confirmError) {
         toast.error(confirmError.message);
@@ -65,7 +66,9 @@ const CheckoutForm = ({ total, formData, cartItems }) => {
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Something went wrong during payment");
+      toast.error(
+        err.response?.data?.message || "Something went wrong during payment"
+      );
     } finally {
       setLoading(false);
     }
@@ -92,7 +95,9 @@ const CheckoutForm = ({ total, formData, cartItems }) => {
         type="submit"
         disabled={!stripe || loading}
         className={`w-full py-4 rounded-xl font-black text-white transition shadow-lg ${
-          loading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
         }`}
       >
         {loading ? "Processing..." : `Pay $${total.toFixed(2)} Now`}

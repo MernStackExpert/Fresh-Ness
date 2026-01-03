@@ -46,7 +46,10 @@ const AdminProductDetails = () => {
           <FaArrowLeft /> Back to Manage Products
         </button>
         <div className="flex gap-3">
-          <Link to={`/dashboard/admin/update-product/${product._id}`} className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition">
+          <Link
+            to={`/dashboard/admin/update-product/${product._id}`}
+            className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition"
+          >
             <FaEdit /> Edit Product
           </Link>
         </div>

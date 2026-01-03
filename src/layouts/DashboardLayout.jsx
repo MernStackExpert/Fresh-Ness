@@ -73,22 +73,22 @@ const DashboardLayout = () => {
     children: [
       {
         name: "Manage Orders",
-        path: "/dashboard/manage-orders",
+        path: "/dashboard/am/manage-orders",
         icon: <FiShoppingBag size={18} />,
       },
       {
         name: "Shipped Orders",
-        path: "/dashboard/shipped-orders",
+        path: "/dashboard/am/shipped-orders",
         icon: <FiTruck size={18} />,
       },
       {
         name: "Delivered Orders",
-        path: "/dashboard/delivered-orders",
+        path: "/dashboard/am/delivered-orders",
         icon: <FiCheckCircle size={18} />,
       },
       {
         name: "Cancelled Orders",
-        path: "/dashboard/cancelled-orders",
+        path: "/dashboard/am/cancelled-orders",
         icon: <FiXCircle size={18} />,
       },
     ],
@@ -131,9 +131,14 @@ const DashboardLayout = () => {
       icon: <FiShoppingBag size={20} />,
     },
     {
-      name: "Settings",
-      path: "/dashboard/settings",
-      icon: <FiSettings size={20} />,
+      name: "Delivered Orders",
+      path: "/dashboard/delivered-orders",
+      icon: <FiCheckCircle size={18} />,
+    },
+    {
+      name: "Cancelled Orders",
+      path: "/dashboard/cancelled-orders",
+      icon: <FiXCircle size={18} />,
     },
   ];
 

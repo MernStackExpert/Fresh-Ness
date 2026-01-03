@@ -24,6 +24,10 @@ import ManageOrders from "../pages/Dashboard/Admin-manger/Orders/ManageOrders";
 import ShippedOrders from "../pages/Dashboard/Admin-manger/Orders/ShippedOrders";
 import DeliveredOrders from "../pages/Dashboard/Admin-manger/Orders/DeliveredOrders";
 import CancelledOrders from "../pages/Dashboard/Admin-manger/Orders/CancelledOrders";
+import MyOrders from "../pages/Dashboard/User/MyOrders";
+import UserOrderDetails from "../pages/Dashboard/User/UserOrderDetails";
+import UserCancelledOrders from "../pages/Dashboard/User/UserCancelledOrders";
+import UserDeliveredOrders from "../pages/Dashboard/User/UserDeliveredOrders";
 
 export const route = createBrowserRouter([
   {
@@ -109,19 +113,19 @@ export const route = createBrowserRouter([
         element: <UpdateProduct />,
       },
       {
-        path: "manage-orders",
+        path: "am/manage-orders",
         element: <ManageOrders />,
       },
       {
-        path: "shipped-orders",
+        path: "am/shipped-orders",
         element: <ShippedOrders />,
       },
       {
-        path: "delivered-orders",
+        path: "am/delivered-orders",
         element: <DeliveredOrders />,
       },
       {
-        path: "cancelled-orders",
+        path: "am/cancelled-orders",
         element: <CancelledOrders />,
       },
       {
@@ -131,6 +135,22 @@ export const route = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "my-orders",
+        element: <MyOrders/>,
+      },
+      {
+        path: "order-detailse/:id",
+        element: <UserOrderDetails/>,
+      },
+      {
+        path: "cancelled-orders",
+        element: <UserCancelledOrders/>,
+      },
+      {
+        path: "delivered-orders",
+        element: <UserDeliveredOrders/>,
       },
     ],
   },
