@@ -15,7 +15,7 @@ const HeroSection = () => {
     { name: "Desserts", icon: "🧁", slug: "Dairy" },
     { name: "Drinks & Juice", icon: "🧃", slug: "Beverages" },
     { name: "Fish & Meats", icon: "🐟", slug: "Meats" },
-    { name: "Pets & Animals", icon: "🐶", slug: "Pets" },
+    { name: "Pets & Animalsa", icon: "🐶", slug: "Pets" },
   ];
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const HeroSection = () => {
               </div>
               <button
                 onClick={() => navigate("/all-grocerice")}
-                className="bg-indigo-700 text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-indigo-800 transition-all duration-300 shadow-xl active:scale-95"
+                className="bg-indigo-700 text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-indigo-800 transition-all duration-300 shadow-xl active:scale-95 cursor-pointer"
               >
                 Shop Now
               </button>
@@ -144,7 +144,7 @@ const HeroSection = () => {
                 </div>
                 <button
                   onClick={() => navigate("/all-grocerice")}
-                  className="bg-white text-indigo-900 w-fit px-6 py-2 rounded-full text-xs font-black hover:bg-amber-400 hover:text-white transition-colors"
+                  className="bg-white text-indigo-900 w-fit px-6 py-2 rounded-full text-xs font-black hover:bg-amber-400 hover:text-white transition-colors cursor-pointer"
                 >
                   SHOP NOW
                 </button>
@@ -165,7 +165,7 @@ const HeroSection = () => {
                 <div className="relative z-10 p-4 h-full flex flex-col justify-between text-center items-center">
                   <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-lg">
                     <h4 className="font-black text-[10px] md:text-xs text-indigo-900 uppercase">
-                      Baby Diaper
+                      SWEET DESERT
                     </h4>
                   </div>
                   <button

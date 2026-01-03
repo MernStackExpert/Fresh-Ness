@@ -55,7 +55,7 @@ const ProductCard = ({ product }) => {
 
     console.log(existingCart)
 
-    const existingItemIndex = existingCart.findIndex(item => item.cartId === cartItem.cartId);
+    const existingItemIndex = existingCart.findIndex(item => item.productId === cartItem.productId);
 
     if (existingItemIndex > -1) {
       existingCart[existingItemIndex].quantity += 1;

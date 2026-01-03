@@ -26,7 +26,7 @@ const ProductDetails = () => {
         const data = await res.json();
         
         setProduct(data);
-        setMainImage(data.singleImg);
+        setMainImage(data.singleImg || data.thumbnail);
         
         if (data.variants && data.variants.length > 0) {
           setSelectedVariant(data.variants[0]);
@@ -50,18 +50,17 @@ const ProductDetails = () => {
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     
     const cartItem = {
-      cartId: `${product._id}-default`,
+      cartId: `${product._id}-${selectedVariant ? selectedVariant.unit : 'default'}`,
       productId: product._id,
       name: product.name,
-      image: product.singleImg,
-      price: selectedVariant ? selectedVariant.price : product.price,
+      image: product.singleImg || product.thumbnail,
+      price: selectedVariant ? Number(selectedVariant.price) : Number(product.price),
       unit: selectedVariant ? selectedVariant.unit : "Standard",
       quantity: quantity,
       category: product.category
     };
 
-
-    const existingItemIndex = existingCart.findIndex(item => item.cartId === cartItem.cartId);
+    const existingItemIndex = existingCart.findIndex(item => item.productId === cartItem.productId);
 
     if (existingItemIndex > -1) {
       existingCart[existingItemIndex].quantity += quantity;
@@ -102,7 +101,7 @@ const ProductDetails = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-white min-h-screen pb-20"
+      className="bg-white min-h-screen pb-20 font-sans"
     >
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -123,7 +122,7 @@ const ProductDetails = () => {
                   className="w-full h-full object-cover" 
                 />
               </AnimatePresence>
-              {product.discountPercentage > 0 && (
+              {Number(product.discountPercentage) > 0 && (
                 <span className="absolute top-6 left-6 bg-pink-500 text-white font-black px-4 py-1.5 rounded-full shadow-lg text-sm uppercase">
                   -{product.discountPercentage}%
                 </span>
@@ -131,7 +130,7 @@ const ProductDetails = () => {
             </motion.div>
             
             <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-              {[product.singleImg, ...product.images].map((img, idx) => (
+              {[product.singleImg, ...(product.images || [])].filter(Boolean).map((img, idx) => (
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -163,7 +162,7 @@ const ProductDetails = () => {
               <div className="flex items-center gap-4">
                 <div className="flex text-amber-400">
                   {[...Array(5)].map((_, i) => (
-                    <IoStar key={i} className={i < Math.floor(product.rating) ? "fill-current" : "text-gray-200"} />
+                    <IoStar key={i} className={i < Math.floor(Number(product.rating)) ? "fill-current" : "text-gray-200"} />
                   ))}
                 </div>
                 <span className="text-gray-400 font-bold text-sm">
@@ -179,11 +178,11 @@ const ProductDetails = () => {
               className="flex items-baseline gap-4 my-8"
             >
               <span className="text-4xl font-black text-indigo-900">
-                ${selectedVariant ? selectedVariant.price.toFixed(2) : product.price.toFixed(2)}
+                ${selectedVariant ? Number(selectedVariant.price).toFixed(2) : Number(product.price).toFixed(2)}
               </span>
               {product.oldPrice && (
                 <span className="text-xl text-gray-400 line-through">
-                  ${product.oldPrice.toFixed(2)}
+                  ${Number(product.oldPrice).toFixed(2)}
                 </span>
               )}
             </motion.div>
@@ -194,11 +193,11 @@ const ProductDetails = () => {
               transition={{ delay: 0.4 }}
               className="text-gray-600 leading-relaxed mb-8 text-lg"
             >
-              {product.description}
+              {product.shortDescription || product.description}
             </motion.p>
 
             <div className="grid grid-cols-2 gap-4 mb-10">
-              {product.features.map((feature, i) => (
+              {(product.features || []).map((feature, i) => (
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -211,7 +210,7 @@ const ProductDetails = () => {
               ))}
             </div>
 
-            {product.variants.length > 0 && (
+            {product.variants && product.variants.length > 0 && (
               <div className="mb-10">
                 <h3 className="font-black text-gray-800 uppercase text-xs tracking-widest mb-4">Select Size</h3>
                 <div className="flex flex-wrap gap-3">
@@ -226,7 +225,7 @@ const ProductDetails = () => {
                         : "border-gray-100 text-gray-500 hover:border-gray-200"
                       }`}
                     >
-                      {v.unit} - ${v.price.toFixed(2)}
+                      {v.unit} - ${Number(v.price).toFixed(2)}
                     </motion.button>
                   ))}
                 </div>
@@ -291,38 +290,7 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
-
-        <div className="mt-24">
-          <div className="flex items-center justify-between mb-10 border-b border-gray-100 pb-4">
-            <div>
-              <h2 className="text-3xl font-black text-gray-900 tracking-tighter">Related Groceries</h2>
-              <p className="text-gray-400 text-sm font-medium">Picked specifically for you</p>
-            </div>
-            <div className="flex gap-2">
-               <button className="p-3 bg-gray-50 rounded-full text-gray-400 hover:bg-green-600 hover:text-white transition-all shadow-sm">
-                 <IoChevronBack size={20} />
-               </button>
-               <button className="p-3 bg-gray-50 rounded-full text-gray-400 hover:bg-green-600 hover:text-white transition-all shadow-sm">
-                 <IoChevronForward size={20} />
-               </button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            {relatedProducts.length > 0 ? (
-              relatedProducts.map(item => (
-                <ProductCard key={item._id} product={item} />
-              ))
-            ) : (
-              <p className="col-span-full text-center text-gray-400 py-10 font-medium">Searching for similar picks...</p>
-            )}
-          </div>
-        </div>
       </div>
-      <style>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </motion.div>
   );
 };

@@ -75,23 +75,20 @@ const Navbar = () => {
     { name: "Home", path: "/", dropdown: null },
     { name: "All Groceries", path: "/all-grocerice", dropdown: null },
     {
-      name: "Pages",
+      name: "Category",
       path: null,
       dropdown: [
-        { name: "About Us", path: "/about" },
-        { name: "FAQ", path: "/faq" },
-        { name: "Terms & Conditions", path: "/terms" },
+        { name: "All Grocerice", path: "/all-grocerice" },
+        { name: "Vegetables", path: "/all-grocerice?category=Vegetables" },
+        { name: "Fruits", path: "/all-grocerice?category=Fruits" },
+        { name: "Dairy", path: "/all-grocerice?category=Dairy" },
+        { name: "Beverages", path: "/all-grocerice?category=Beverages" },
       ],
     },
-    {
-      name: "Shop",
-      path: null,
-      dropdown: [
-        { name: "Shop Grid", path: "/shop-grid" },
-        { name: "Product Details", path: "/product-details" },
-      ],
-    },
+    { name: "About", path: "/about", dropdown: null },
+    { name: "Services", path: "/services", dropdown: null },
     { name: "Contact", path: "/contact", dropdown: null },
+    { name: "Dashboard", path: "/dashboard", dropdown: null },
   ];
 
   return (

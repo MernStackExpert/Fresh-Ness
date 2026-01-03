@@ -1,31 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoLocationOutline, IoCardOutline, IoCashOutline, IoChevronBackOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
-import axios from "axios";
-
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../components/CheckoutForm";
 import axiosInstance from "../utils/axiosInstance";
+import { AuthContext } from "../Provider/AuthContext";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const Checkout = () => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [loading, setLoading] = useState(false);
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    city: "",
-    address: "",
-  });
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("cart")) || [];
@@ -41,29 +33,31 @@ const Checkout = () => {
   const shipping = subtotal >= 50 ? 0 : 2;
   const total = subtotal + shipping;
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handlePlaceOrder = async () => {
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.address) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+  // Form Submit Handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const form = e.target;
+    const formDataValues = {
+      fullName: form.fullName.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      city: form.city.value,
+      address: form.address.value,
+    };
 
     if (paymentMethod === "COD") {
       setLoading(true);
       const orderData = {
-        email: formData.email,
+        email: formDataValues.email,
         products: cartItems,
         total: total,
         paymentMethod: "COD",
-        shippingAddress: formData,
+        shippingAddress: formDataValues,
       };
 
       try {
         const response = await axiosInstance.post("/orders/", orderData);
-        
         if (response.status === 201) {
           localStorage.removeItem("cart");
           window.dispatchEvent(new Event("cart-updated"));
@@ -71,7 +65,6 @@ const Checkout = () => {
           navigate("/order-success");
         }
       } catch (error) {
-        console.error("COD Order Error:", error.response?.data || error.message);
         toast.error(error.response?.data?.message || "Failed to place order");
       } finally {
         setLoading(false);
@@ -83,7 +76,7 @@ const Checkout = () => {
     <div className="bg-gray-50 min-h-screen pb-20">
       <div className="bg-white border-b py-8">
         <div className="container mx-auto px-4">
-          <button onClick={() => navigate("/cart")} className="flex items-center gap-2 text-gray-500 hover:text-green-600 font-bold mb-4 cursor-pointer transition-colors">
+          <button onClick={() => navigate("/cart")} className="flex items-center gap-2 text-gray-500 hover:text-green-600 font-bold mb-4 cursor-pointer transition-colors border-none bg-transparent">
             <IoChevronBackOutline /> Back to Cart
           </button>
           <h1 className="text-3xl font-black text-gray-900">Checkout</h1>
@@ -91,7 +84,7 @@ const Checkout = () => {
       </div>
 
       <div className="container mx-auto px-4 mt-8">
-        <div className="grid lg:grid-cols-12 gap-8">
+        <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8">
           
           <div className="lg:col-span-8 space-y-6">
             <div className="bg-white p-6 rounded-2xl border shadow-sm">
@@ -100,11 +93,11 @@ const Checkout = () => {
               </h2>
               
               <div className="grid md:grid-cols-2 gap-4">
-                <input type="text" name="fullName" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Full Name" onChange={handleInputChange} />
-                <input type="email" name="email" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Email Address" onChange={handleInputChange} />
-                <input type="tel" name="phone" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Phone Number" onChange={handleInputChange} />
-                <input type="text" name="city" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="City" onChange={handleInputChange} />
-                <textarea name="address" rows="3" required className="md:col-span-2 w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Full Address" onChange={handleInputChange}></textarea>
+                <input defaultValue={user?.displayName} type="text" name="fullName" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Full Name" />
+                <input defaultValue={user?.email} type="email" name="email" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Email Address" />
+                <input type="tel" name="phone" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Phone Number" />
+                <input type="text" name="city" required className="w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="City" />
+                <textarea name="address" rows="3" required className="md:col-span-2 w-full p-3 rounded-xl border border-gray-200 outline-none focus:border-green-500" placeholder="Full Address"></textarea>
               </div>
             </div>
 
@@ -128,7 +121,8 @@ const Checkout = () => {
                 {paymentMethod === "Online" && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="pt-4 border-t">
                     <Elements stripe={stripePromise}>
-                      <CheckoutForm total={total} formData={formData} cartItems={cartItems} />
+                   
+                      <CheckoutForm total={total} cartItems={cartItems} />
                     </Elements>
                   </motion.div>
                 )}
@@ -166,19 +160,20 @@ const Checkout = () => {
                 </div>
               </div>
 
-              {paymentMethod === "COD" && (
+              {paymentMethod === "COD" ? (
                 <button 
-                  type="button" 
-                  onClick={handlePlaceOrder}
+                  type="submit"
                   disabled={loading} 
                   className={`w-full text-white py-4 rounded-xl font-black transition-all shadow-lg ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 active:scale-95 cursor-pointer"}`}
                 >
                   {loading ? "Placing Order..." : "Place Order Now"}
                 </button>
+              ) : (
+                <p className="text-xs text-gray-400 text-center italic">Please complete payment above to finish order.</p>
               )}
             </div>
           </aside>
-        </div>
+        </form>
       </div>
     </div>
   );

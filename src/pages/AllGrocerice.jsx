@@ -24,7 +24,7 @@ const AllGroceries = () => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [order, setOrder] = useState("desc");
   const [page, setPage] = useState(Number(queryParams.get("page")) || 1);
-  const limit = 20;
+  const limit = 18;
 
   useEffect(() => {
     const currentSearch = new URLSearchParams(location.search).get("search") || "";
