@@ -2,3 +2,12 @@
 @plugin "daisyui" {
   themes: light --default, dark, cupcake;
 }
+
+
+.container {
+  max-width: 1280px;  
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}

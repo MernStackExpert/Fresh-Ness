@@ -10,25 +10,26 @@ import {
   IoLogoInstagram,
   IoLogoLinkedin,
 } from "react-icons/io5";
+import { FaFacebook, FaGithub } from "react-icons/fa";
 
 const Contact = () => {
   const contactDetails = [
     {
       icon: <IoLocationOutline size={28} />,
       title: "Our Location",
-      detail: "Rajshahi, Bangladesh", // আপনার লোকেশন আপডেট করা হয়েছে
+      detail: "Rajshahi, Bangladesh",
       color: "bg-blue-50 text-blue-600",
     },
     {
       icon: <IoCallOutline size={28} />,
       title: "Phone Number",
-      detail: "01908716502", // আপনার ফোন নম্বর আপডেট করা হয়েছে
+      detail: "+880 1908716502",
       color: "bg-green-50 text-green-600",
     },
     {
       icon: <IoMailOutline size={28} />,
       title: "Email Address",
-      detail: "mdnirob30k@gmail.com", // আপনার ইমেইল আপডেট করা হয়েছে
+      detail: "mdnirob30k@gmail.com",
       color: "bg-amber-50 text-amber-600",
     },
     {
@@ -95,21 +96,32 @@ const Contact = () => {
               <h3 className="font-bold text-gray-800 mb-6 uppercase tracking-wider text-sm">
                 Follow Us
               </h3>
-              <div className="flex justify-center gap-4">
-                {[
-                  <IoLogoFacebook />,
-                  <IoLogoTwitter />,
-                  <IoLogoInstagram />,
-                  <IoLogoLinkedin />,
-                ].map((icon, i) => (
-                  <motion.button
-                    key={i}
-                    whileHover={{ y: -5, scale: 1.1 }}
-                    className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all text-xl"
-                  >
-                    {icon}
-                  </motion.button>
-                ))}
+              <div className="flex items-center justify-center gap-4 pt-4 ">
+                <motion.a
+                  href="https://www.facebook.com/MernStackExpert"
+                  whileHover={{ y: -4 }}
+                  target="blank"
+                  className="w-10 h-10 rounded-full text-indigo-500 border border-gray-100 flex items-center justify-center hover:text-indigo-600 hover:border-indigo-100 shadow-sm transition-all"
+                >
+                  <FaFacebook />{" "}
+                </motion.a>
+
+                <motion.a
+                  href="https://www.linkedin.com/in/mdnirobsarkar/"
+                  whileHover={{ y: -4 }}
+                  target="blank"
+                  className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-indigo-500 hover:text-indigo-600 hover:border-indigo-100 shadow-sm transition-all"
+                >
+                  <IoLogoLinkedin />
+                </motion.a>
+                <motion.a
+                  href="https://www.linkedin.com/in/mdnirobsarkar/"
+                  whileHover={{ y: -4 }}
+                  target="blank"
+                  className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-indigo-500 hover:text-indigo-600 hover:border-indigo-100 shadow-sm transition-all"
+                >
+                  <FaGithub />
+                </motion.a>
               </div>
             </div>
           </div>

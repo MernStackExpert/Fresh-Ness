@@ -5,7 +5,6 @@ import { FcGoogle } from "react-icons/fc";
 import { IoMailOutline, IoLockClosedOutline, IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { AuthContext } from "../Provider/AuthContext";
 
-
 const Login = () => {
   const { loginUser, googleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -13,12 +12,18 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    let email, password;
 
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
+    if (e.target) {
+      e.preventDefault();
+      email = e.target.email.value;
+      password = e.target.password.value;
+    } else {
+      email = e.email;
+      password = e.password;
+    }
+
+    setLoading(true);
 
     try {
       await loginUser(email, password);
@@ -50,8 +55,31 @@ const Login = () => {
           <p className="text-gray-500 font-medium">Log in to your account</p>
         </div>
 
+        <div className="flex flex-wrap gap-2 justify-center">
+          <button
+            type="button"
+            onClick={() => handleLogin({ email: "admin@gmail.com", password: "1234Nn" })}
+            className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors cursor-pointer"
+          >
+            Demo Admin
+          </button>
+          <button
+            type="button"
+            onClick={() => handleLogin({ email: "manager@freshness.com", password: "1234Nn" })}
+            className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-xs font-bold hover:bg-purple-200 transition-colors cursor-pointer"
+          >
+            Demo Manager
+          </button>
+          <button
+            type="button"
+            onClick={() => handleLogin({ email: "user@freshness.com", password: "1234Nn" })}
+            className="px-3 py-1.5 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold hover:bg-orange-200 transition-colors cursor-pointer"
+          >
+            Demo User
+          </button>
+        </div>
+
         <form className="mt-8 space-y-5" onSubmit={handleLogin}>
-          {/* Email Field */}
           <div className="relative">
             <IoMailOutline className="absolute left-4 top-4 text-gray-400" size={20} />
             <input
@@ -63,7 +91,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password Field with Eye Toggle */}
           <div className="relative">
             <IoLockClosedOutline className="absolute left-4 top-4 text-gray-400" size={20} />
             <input
@@ -76,14 +103,14 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-4 text-gray-400 hover:text-green-600 transition-colors"
+              className="absolute right-4 top-4 text-gray-400 hover:text-green-600 transition-colors cursor-pointer"
             >
               {showPassword ? <IoEyeOffOutline size={22} /> : <IoEyeOutline size={22} />}
             </button>
           </div>
 
           <div className="flex justify-end">
-            <button type="button" className="text-sm font-bold text-green-600 hover:underline">
+            <button type="button" className="text-sm font-bold text-green-600 hover:underline cursor-pointer">
               Forgot password?
             </button>
           </div>
@@ -91,7 +118,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-green-600 text-white rounded-2xl font-bold text-lg hover:bg-green-700 transition-all shadow-lg shadow-green-100 active:scale-95 disabled:bg-gray-400"
+            className="w-full py-4 bg-green-600 text-white rounded-2xl font-bold text-lg hover:bg-green-700 transition-all shadow-lg shadow-green-100 active:scale-95 disabled:bg-gray-400 cursor-pointer"
           >
             {loading ? "Logging in..." : "Log In"}
           </button>
@@ -106,11 +133,10 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Google Login Button */}
         <button
           onClick={handleGoogleLogin}
           type="button"
-          className="w-full flex items-center justify-center gap-3 py-4 border-2 border-gray-100 rounded-2xl font-bold text-gray-700 hover:bg-gray-50 transition-all active:scale-95"
+          className="w-full flex items-center justify-center gap-3 py-4 border-2 border-gray-100 rounded-2xl font-bold text-gray-700 hover:bg-gray-50 transition-all active:scale-95 cursor-pointer"
         >
           <FcGoogle size={24} />
           Sign in with Google
@@ -118,7 +144,7 @@ const Login = () => {
 
         <p className="text-center text-gray-600 font-medium">
           New here?{" "}
-          <Link to="/registration" className="text-green-600 font-black hover:underline">
+          <Link to="/registration" className="text-green-600 font-black hover:underline cursor-pointer">
             Create Account
           </Link>
         </p>
