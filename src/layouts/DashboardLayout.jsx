@@ -117,9 +117,15 @@ const DashboardLayout = () => {
   const managerMenu = [
     {
       name: "Inventory",
-      path: "/dashboard/inventory",
+      path: "/dashboard",
       icon: <FiBox size={20} />,
     },
+    {
+      name: "Add Products",
+      path: "/dashboard/admin-manger/add-products",
+      icon: <FiBox size={20} />,
+    },
+
     orderManagement,
   ];
 
@@ -290,7 +296,8 @@ const DashboardLayout = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-6">
-            <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-all relative">
+            {/* BELL BUTTON BY DEFAULT NONO IT USE USE FOR FEATURE  */}
+            <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-all relative hidden">
               <FiBell size={20} />
               <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             </button>

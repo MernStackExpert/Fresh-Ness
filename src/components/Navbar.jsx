@@ -15,12 +15,13 @@ import {
   IoCallOutline,
   IoChevronDownOutline,
   IoCloseOutline,
-  IoLogOutOutline, 
-  IoSettingsOutline, 
+  IoLogOutOutline,
+  IoSettingsOutline,
+  IoAddCircleSharp,
+  IoPause,
 } from "react-icons/io5";
 import { RiPercentLine } from "react-icons/ri";
 import { AuthContext } from "../Provider/AuthContext";
-
 
 const getCartCountFromStorage = () => {
   if (typeof window === "undefined") return 0;
@@ -29,7 +30,7 @@ const getCartCountFromStorage = () => {
 };
 
 const Navbar = () => {
-  const { user, logOut } = useContext(AuthContext); 
+  const { user, logOut } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [profileDropdown, setProfileDropdown] = useState(false);
@@ -88,7 +89,7 @@ const Navbar = () => {
     { name: "About", path: "/about", dropdown: null },
     { name: "Services", path: "/services", dropdown: null },
     { name: "Contact", path: "/contact", dropdown: null },
-    { name: "Dashboard", path: "/dashboard", dropdown: null },
+    // { name: "Dashboard", path: "/dashboard", dropdown: null },
   ];
 
   return (
@@ -179,9 +180,21 @@ const Navbar = () => {
                             onClick={() => setProfileDropdown(false)}
                             className="flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-green-50 hover:text-green-600 transition-all"
                           >
-                            <IoSettingsOutline size={18} />
+                            <IoPersonOutline size={18} />
                             <span className="font-medium text-sm">
                               View Profile
+                            </span>
+                          </Link>
+
+                          <Link
+                            to="/dashboard"
+                            onClick={() => setProfileDropdown(false)}
+                            className="flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-green-50 hover:text-green-600 transition-all"
+                          >
+                            <IoSettingsOutline size={18} />
+
+                            <span className="font-medium text-sm">
+                              Dashboard
                             </span>
                           </Link>
 
@@ -217,12 +230,12 @@ const Navbar = () => {
               </div>
               {/* Profile / Login logic ends here */}
 
-              <div className="relative cursor-pointer hover:text-red-600 transition-colors">
+              <Link to="/current-work" className="relative cursor-pointer hover:text-red-600 transition-colors">
                 <IoHeartOutline size={26} />
                 <span className="absolute -top-2 -right-2 bg-red-400 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border text-white border-white">
                   0
                 </span>
-              </div>
+              </Link>
               <Link
                 to="/cart"
                 className="relative cursor-pointer hover:text-green-600 transition-colors"

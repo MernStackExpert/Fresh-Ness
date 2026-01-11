@@ -15,7 +15,7 @@ const IconTimer = () => (
 const DiscountSection = () => {
   // Discount Products Data
   const discountProducts = [
-    { id: 1, name: "Organic Honey & Nuts", price: 25.00, discountPrice: 18.00, image: "https://images.unsplash.com/photo-1599408194820-4130423565c1?auto=format&fit=crop&q=80&w=400" },
+    { id: 1, name: "Organic Honey & Nuts", price: 25.00, discountPrice: 18.00, image: "https://www.naturestrunk.com/cdn/shop/files/nature-s-trunk-honey-with-dryfruits-nut-s-and-seed-s-feature-image-_7.jpg?v=1761914794" },
     { id: 2, name: "Hot Chocolate Mix", price: 15.00, discountPrice: 10.50, image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&q=80&w=400" },
     { id: 3, name: "Winter Citrus Box", price: 35.00, discountPrice: 28.00, image: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&q=80&w=400" },
   ];

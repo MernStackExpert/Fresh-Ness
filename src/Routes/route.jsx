@@ -28,6 +28,7 @@ import MyOrders from "../pages/Dashboard/User/MyOrders";
 import UserOrderDetails from "../pages/Dashboard/User/UserOrderDetails";
 import UserCancelledOrders from "../pages/Dashboard/User/UserCancelledOrders";
 import UserDeliveredOrders from "../pages/Dashboard/User/UserDeliveredOrders";
+import UnderDevelopment from "../pages/UnderDevelopment";
 
 export const route = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ export const route = createBrowserRouter([
       {
         path: "/services",
         element: <Services />,
+      },
+      {
+        path: "/current-work",
+        element: <UnderDevelopment/>,
       },
     ],
   },
