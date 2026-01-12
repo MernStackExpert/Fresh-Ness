@@ -5,6 +5,7 @@ import RevenueDonutChart from "../../../components/AdminComponents/RevenueDonutC
 import UserProgressChart from "../../../components/AdminComponents/UserProgressChart";
 import OrderDonutChart from "../../../components/AdminComponents/OrderDonutChart";
 import ProductPieChart from "../../../components/AdminComponents/ProductPieChart";
+import { Link } from "react-router";
 
 const AdminStats = () => {
   const [data, setData] = useState({
@@ -139,9 +140,9 @@ const AdminStats = () => {
               more to increase sales.
             </p>
           </div>
-          <button className="px-10 py-4 bg-white text-green-600 font-black rounded-2xl hover:bg-green-50 transition-colors">
+          <Link to="/dashboard/admin/manage-products" className="px-10 py-4 bg-white text-green-600 font-black rounded-2xl hover:bg-green-50 transition-colors">
             Manage Products
-          </button>
+          </Link>
         </div>
         <FiBox className="absolute -bottom-10 -right-10 text-white/10 w-64 h-64" />
       </div>

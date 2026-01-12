@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axiosInstance from "../../../utils/axiosInstance";
 import { FiUser, FiShield, FiStar } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
+import { AuthContext } from "../../../Provider/AuthContext";
 
 const roles = ["all", "user", "manager", "admin"];
 
 const ManageUsers = () => {
+  const { user: currentUser } = useContext(AuthContext); 
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [page, setPage] = useState(1);
@@ -16,6 +18,8 @@ const ManageUsers = () => {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const limit = 10;
+
+  const isRestrictedAdmin = currentUser?.email === "admin@freshness.com";
 
   const fetchUsers = async () => {
     try {
@@ -35,7 +39,6 @@ const ManageUsers = () => {
   }, []);
 
   useEffect(() => {
-    // সার্চ ইনপুট দেওয়ার সাথে সাথে লোডিং শুরু
     setSearchLoading(true);
 
     const applyFilters = () => {
@@ -61,7 +64,6 @@ const ManageUsers = () => {
       const end = start + limit;
       setFilteredUsers(temp.slice(start, end));
 
-      // ফিল্টারিং শেষ হলে লোডিং বন্ধ
       setSearchLoading(false);
     };
 
@@ -70,6 +72,12 @@ const ManageUsers = () => {
   }, [users, search, roleFilter, page]);
 
   const updateRole = async (id, role) => {
+    // block update if user is restricted
+    if (isRestrictedAdmin) {
+      toast.error("Restricted Admin cannot update roles!");
+      return;
+    }
+
     try {
       setUpdatingId(id);
       await axiosInstance.patch(`/users/${id}`, { role });
@@ -101,7 +109,7 @@ const ManageUsers = () => {
             Manage Users
           </h2>
           <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
-            Access Control Panel
+            Access Control Panel {isRestrictedAdmin && "(View Only Mode)"}
           </p>
         </div>
 
@@ -198,39 +206,50 @@ const ManageUsers = () => {
                     </td>
                     <td className="px-8 py-5">
                       <div className="flex justify-center gap-2">
+                        {/* USER ROLE BUTTON */}
                         <button
-                          disabled={updatingId === user._id}
+                          disabled={updatingId === user._id || isRestrictedAdmin}
                           onClick={() => updateRole(user._id, "user")}
                           className={`p-2.5 rounded-xl border transition-all ${
                             user.role === "user"
                               ? "bg-gray-900 text-white border-gray-900 shadow-lg"
-                              : "bg-white text-gray-400 hover:text-gray-900"
+                              : isRestrictedAdmin 
+                                ? "bg-gray-50 text-gray-200 border-gray-100 cursor-not-allowed" 
+                                : "bg-white text-gray-400 hover:text-gray-900"
                           }`}
-                          title="User Role"
+                          title={isRestrictedAdmin ? "Disabled for Demo" : "User Role"}
                         >
                           <FiUser size={16} />
                         </button>
+
+                        {/* MANAGER ROLE BUTTON */}
                         <button
-                          disabled={updatingId === user._id}
+                          disabled={updatingId === user._id || isRestrictedAdmin}
                           onClick={() => updateRole(user._id, "manager")}
                           className={`p-2.5 rounded-xl border transition-all ${
                             user.role === "manager"
                               ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-100"
-                              : "bg-white text-gray-400 hover:text-indigo-600"
+                              : isRestrictedAdmin 
+                                ? "bg-gray-50 text-gray-200 border-gray-100 cursor-not-allowed" 
+                                : "bg-white text-gray-400 hover:text-indigo-600"
                           }`}
-                          title="Manager Role"
+                          title={isRestrictedAdmin ? "Disabled for Demo" : "Manager Role"}
                         >
                           <FiShield size={16} />
                         </button>
+
+                        {/* ADMIN ROLE BUTTON */}
                         <button
-                          disabled={updatingId === user._id}
+                          disabled={updatingId === user._id || isRestrictedAdmin}
                           onClick={() => updateRole(user._id, "admin")}
                           className={`p-2.5 rounded-xl border transition-all ${
                             user.role === "admin"
                               ? "bg-red-600 text-white border-red-600 shadow-lg shadow-red-100"
-                              : "bg-white text-gray-400 hover:text-red-600"
+                              : isRestrictedAdmin 
+                                ? "bg-gray-50 text-gray-200 border-gray-100 cursor-not-allowed" 
+                                : "bg-white text-gray-400 hover:text-red-600"
                           }`}
-                          title="Admin Role"
+                          title={isRestrictedAdmin ? "Disabled for Demo" : "Admin Role"}
                         >
                           <FiStar size={16} />
                         </button>
@@ -251,7 +270,6 @@ const ManageUsers = () => {
           </table>
         </div>
 
-        {/* Pagination Container */}
         <div className="px-8 py-6 bg-gray-50/30 flex items-center justify-between border-t border-gray-50">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
             Page {page} of {totalPages}

@@ -14,6 +14,8 @@ const Profile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
+  const isRestrictedAdmin = user?.email === "admin@freshness.com";
+
   const imgbb_api_key = "26f8d54dc1b54255034bb60cb5a9fa8f";
 
   const Toast = Swal.mixin({
@@ -80,7 +82,9 @@ const Profile = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-gray-100"
+        className={`max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-gray-100 ${
+        isRestrictedAdmin ? "pointer-events-none select-none" : ""
+      }`}
       >
         <div className="h-32 bg-gradient-to-r from-green-500 to-indigo-600"></div>
 

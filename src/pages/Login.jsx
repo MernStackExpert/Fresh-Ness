@@ -14,7 +14,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     let email, password;
 
-    if (e.target) {
+    if (e.target && e.preventDefault) {
       e.preventDefault();
       email = e.target.email.value;
       password = e.target.password.value;
@@ -55,27 +55,20 @@ const Login = () => {
           <p className="text-gray-500 font-medium">Log in to your account</p>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center">
-          <button
-            type="button"
-            onClick={() => handleLogin({ email: "admin@gmail.com", password: "1234Nn" })}
-            className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors cursor-pointer"
-          >
-            Demo Admin
-          </button>
-          <button
-            type="button"
-            onClick={() => handleLogin({ email: "manager@freshness.com", password: "1234Nn" })}
-            className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-xs font-bold hover:bg-purple-200 transition-colors cursor-pointer"
-          >
-            Demo Manager
-          </button>
+        <div className="flex flex-wrap gap-3 justify-center">
           <button
             type="button"
             onClick={() => handleLogin({ email: "user@freshness.com", password: "1234Nn" })}
-            className="px-3 py-1.5 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold hover:bg-orange-200 transition-colors cursor-pointer"
+            className="px-5 py-2 bg-orange-100 text-orange-700 rounded-xl text-xs font-bold hover:bg-orange-200 transition-colors cursor-pointer"
           >
             Demo User
+          </button>
+          <button
+            type="button"
+            onClick={() => handleLogin({ email: "admin@freshness.com", password: "1234Nn" })}
+            className="px-5 py-2 bg-blue-100 text-blue-700 rounded-xl text-xs font-bold hover:bg-blue-200 transition-colors cursor-pointer"
+          >
+            Demo Sub-Admin
           </button>
         </div>
 

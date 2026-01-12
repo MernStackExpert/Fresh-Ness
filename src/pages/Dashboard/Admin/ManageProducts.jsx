@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FaEdit, FaTrashAlt, FaEye, FaPlus, FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../../../utils/axiosInstance";
 import { Link } from "react-router";
+import { AuthContext } from "../../../Provider/AuthContext";
 
 const ManageProducts = () => {
+  const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,6 +15,7 @@ const ManageProducts = () => {
   const [category, setCategory] = useState("");
 
   const categories = ["Vegetables", "Fruits", "Dairy", "Bakery"];
+  const isRestrictedAdmin = user?.email === "admin@freshness.com";
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -39,6 +42,8 @@ const ManageProducts = () => {
   }, [currentPage, category, search]);
 
   const handleDelete = async (id) => {
+    if (isRestrictedAdmin) return;
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -73,14 +78,24 @@ const ManageProducts = () => {
               </h2>
               <p className="text-gray-500 text-sm">
                 Total Products Found: {products.length}
+                {isRestrictedAdmin && " (View Only Mode)"}
               </p>
             </div>
-            <Link
-              to="/dashboard/admin-manger/add-products"
-              className="w-full md:w-auto flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-md active:scale-95 cursor-pointer"
-            >
-              <FaPlus /> Add New Product
-            </Link>
+            {isRestrictedAdmin ? (
+              <button
+                disabled
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-gray-300 text-white px-5 py-2.5 rounded-lg shadow-sm cursor-not-allowed"
+              >
+                <FaPlus /> Add New Product
+              </button>
+            ) : (
+              <Link
+                to="/dashboard/admin-manger/add-products"
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-md active:scale-95 cursor-pointer"
+              >
+                <FaPlus /> Add New Product
+              </Link>
+            )}
           </div>
 
           <div className="flex flex-col lg:flex-row gap-4 items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -148,7 +163,10 @@ const ManageProducts = () => {
                 </tr>
               ) : (
                 products.map((product) => (
-                  <tr key={product._id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={product._id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-4 md:px-6 py-4">
                       <img
                         src={product.thumbnail}
@@ -160,7 +178,9 @@ const ManageProducts = () => {
                       <div className="text-sm font-bold text-gray-900 max-w-[150px] truncate md:max-w-xs">
                         {product.name}
                       </div>
-                      <div className="text-[10px] md:text-xs text-gray-500">{product.sku}</div>
+                      <div className="text-[10px] md:text-xs text-gray-500">
+                        {product.sku}
+                      </div>
                     </td>
                     <td className="px-4 md:px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
                       {product.category}
@@ -188,20 +208,35 @@ const ManageProducts = () => {
                         >
                           <FaEye size={16} />
                         </Link>
-                        <Link
-                          to={`/dashboard/admin/update-product/${product._id}`}
-                          className="text-amber-500 hover:text-amber-700 p-1 cursor-pointer"
-                          title="Edit"
-                        >
-                          <FaEdit size={16} />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(product._id)}
-                          className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
-                          title="Delete"
-                        >
-                          <FaTrashAlt size={16} />
-                        </button>
+                        {isRestrictedAdmin ? (
+                          <>
+                            <FaEdit
+                              size={16}
+                              className="text-gray-200 cursor-not-allowed p-1"
+                            />
+                            <FaTrashAlt
+                              size={16}
+                              className="text-gray-200 cursor-not-allowed p-1"
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <Link
+                              to={`/dashboard/admin/update-product/${product._id}`}
+                              className="text-amber-500 hover:text-amber-700 p-1 cursor-pointer"
+                              title="Edit"
+                            >
+                              <FaEdit size={16} />
+                            </Link>
+                            <button
+                              onClick={() => handleDelete(product._id)}
+                              className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
+                              title="Delete"
+                            >
+                              <FaTrashAlt size={16} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

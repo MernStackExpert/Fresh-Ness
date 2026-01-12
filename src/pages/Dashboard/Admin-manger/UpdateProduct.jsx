@@ -28,6 +28,8 @@ const UpdateProduct = () => {
   const [imgTab, setImgTab] = useState("upload");
   const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
 
+  const isRestrictedAdmin = user?.email === "admin@freshness.com";
+
   const categories = [
     "Vegetables",
     "Fresh Fruits",
@@ -170,7 +172,9 @@ const UpdateProduct = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="p-4 md:p-8 bg-gray-50 min-h-screen"
+      className={`p-4 md:p-8 bg-gray-50 min-h-screen ${
+        isRestrictedAdmin ? "pointer-events-none select-none" : ""
+      }`}
     >
       <div className="max-w-6xl mx-auto bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-indigo-900 to-blue-800 p-8 text-white flex justify-between items-center">

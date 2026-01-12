@@ -31,7 +31,7 @@ const RoleRoute = ({ children, allowedRoles }) => {
   }, [user]);
 
   if (loading || fetchingRole) {
-    return <div className="h-screen flex items-center justify-center">Verifying Access<span className="loading loading-dots loading-xl"></span></div>;
+    return <div className="h-screen flex items-center justify-center"><span className="loading loading-dots loading-xl"></span></div>;
   }
 
 
