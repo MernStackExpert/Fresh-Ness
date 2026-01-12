@@ -31,6 +31,7 @@ import UnderDevelopment from "../pages/UnderDevelopment";
 import MyOrders from "../pages/Dashboard/Admin-Manager-User/MyOrders";
 import PrivateRoute from "./Privet/PrivateRoute";
 import RoleRoute from "./Privet/RoleRoute";
+import MyProducts from "../pages/Dashboard/Manager/MyProducts";
 
 export const route = createBrowserRouter([
   {
@@ -122,7 +123,7 @@ export const route = createBrowserRouter([
       {
         path: "admin-manger/add-products",
         element: (
-          <RoleRoute allowedRoles={["admin , manager"]}>
+          <RoleRoute allowedRoles={["admin" , "manager"]}>
             <AddProduct />
           </RoleRoute>
         ),
@@ -130,7 +131,7 @@ export const route = createBrowserRouter([
       {
         path: "admin/product-details/:id",
         element: (
-          <RoleRoute allowedRoles={["admin , manager"]}>
+          <RoleRoute allowedRoles={["admin" , "manager"]}>
             <AdminProductDetails />
           </RoleRoute>
         ),
@@ -138,40 +139,46 @@ export const route = createBrowserRouter([
       {
         path: "admin/update-product/:id",
         element: (
-          <RoleRoute allowedRoles={["admin , manager"]}>
+          <RoleRoute allowedRoles={["admin" , "manager"]}>
             <UpdateProduct />
           </RoleRoute>
         ),
       },
       {
         path: "am/manage-orders",
-        element: <RoleRoute allowedRoles={["admin , manager"]}>
+        element: <RoleRoute allowedRoles={["admin" , "manager"]}>
           <ManageOrders />
         </RoleRoute>,
       },
       {
         path: "am/shipped-orders",
-        element: <RoleRoute allowedRoles={["admin , manager"]}>
+        element: <RoleRoute allowedRoles={["admin" , "manager"]}>
           <ShippedOrders />
         </RoleRoute>,
       },
       {
         path: "am/delivered-orders",
-        element: <RoleRoute allowedRoles={["admin , manager"]}>
+        element: <RoleRoute allowedRoles={["admin" , "manager"]}>
           <DeliveredOrders />
         </RoleRoute>,
       },
       {
         path: "am/cancelled-orders",
-        element: <RoleRoute allowedRoles={["admin , manager"]}>
+        element: <RoleRoute allowedRoles={["admin" , "manager"]}>
           <CancelledOrders />
         </RoleRoute>,
       },
       {
         path: "admin/order-details/:id",
-        element: <RoleRoute allowedRoles={["admin , manager"]}>
+        element: <RoleRoute allowedRoles={["admin" , "manager"]}>
           <OrderDetails />
         </RoleRoute>,
+      },
+      {
+        path: "am/my-products",
+        element: <RoleRoute allowedRoles={["admin" , "manager"]}>
+          <MyProducts/>
+        </RoleRoute>
       },
       {
         path: "profile",

@@ -15,6 +15,8 @@ import {
   FiCheckCircle,
   FiXCircle,
 } from "react-icons/fi";
+import { SiMyget } from "react-icons/si";
+import { LuCodesandbox } from "react-icons/lu";
 import { AuthContext } from "../Provider/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 import { motion, AnimatePresence } from "framer-motion";
@@ -105,12 +107,17 @@ const DashboardLayout = () => {
     {
       name: "Manage Products",
       path: "/dashboard/admin/manage-products",
-      icon: <FiBox size={20} />,
+      icon: <LuCodesandbox size={20} />,
     },
     {
       name: "Add Products",
       path: "/dashboard/admin-manger/add-products",
       icon: <FiBox size={20} />,
+    },
+        {
+      name: "My Products",
+      path: "/dashboard/am/my-products",
+      icon: <SiMyget size={20} />,
     },
     {
       name: "My Orders",
@@ -130,6 +137,11 @@ const DashboardLayout = () => {
       name: "Add Products",
       path: "/dashboard/admin-manger/add-products",
       icon: <FiBox size={20} />,
+    },
+    {
+      name: "My Products",
+      path: "/dashboard/am/my-products",
+      icon: <SiMyget size={20} />,
     },
     {
       name: "My Orders",
