@@ -24,11 +24,13 @@ import ManageOrders from "../pages/Dashboard/Admin-manger/Orders/ManageOrders";
 import ShippedOrders from "../pages/Dashboard/Admin-manger/Orders/ShippedOrders";
 import DeliveredOrders from "../pages/Dashboard/Admin-manger/Orders/DeliveredOrders";
 import CancelledOrders from "../pages/Dashboard/Admin-manger/Orders/CancelledOrders";
-import MyOrders from "../pages/Dashboard/User/MyOrders";
 import UserOrderDetails from "../pages/Dashboard/User/UserOrderDetails";
 import UserCancelledOrders from "../pages/Dashboard/User/UserCancelledOrders";
 import UserDeliveredOrders from "../pages/Dashboard/User/UserDeliveredOrders";
 import UnderDevelopment from "../pages/UnderDevelopment";
+import MyOrders from "../pages/Dashboard/Admin-Manager-User/MyOrders";
+import PrivateRoute from "./Privet/PrivateRoute";
+import RoleRoute from "./Privet/RoleRoute";
 
 export const route = createBrowserRouter([
   {
@@ -85,13 +87,17 @@ export const route = createBrowserRouter([
       },
       {
         path: "/current-work",
-        element: <UnderDevelopment/>,
+        element: <UnderDevelopment />,
       },
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
@@ -99,43 +105,73 @@ export const route = createBrowserRouter([
       },
       {
         path: "admin/manage-user",
-        element: <ManageUsers />,
+        element: (
+          <RoleRoute allowedRoles={["admin"]}>
+            <ManageUsers />
+          </RoleRoute>
+        ),
       },
       {
         path: "admin/manage-products",
-        element: <ManageProducts />,
+        element: (
+          <RoleRoute allowedRoles={["admin"]}>
+            <ManageProducts />
+          </RoleRoute>
+        ),
       },
       {
         path: "admin-manger/add-products",
-        element: <AddProduct />,
+        element: (
+          <RoleRoute allowedRoles={["admin , manager"]}>
+            <AddProduct />
+          </RoleRoute>
+        ),
       },
       {
         path: "admin/product-details/:id",
-        element: <AdminProductDetails />,
+        element: (
+          <RoleRoute allowedRoles={["admin , manager"]}>
+            <AdminProductDetails />
+          </RoleRoute>
+        ),
       },
       {
         path: "admin/update-product/:id",
-        element: <UpdateProduct />,
+        element: (
+          <RoleRoute allowedRoles={["admin , manager"]}>
+            <UpdateProduct />
+          </RoleRoute>
+        ),
       },
       {
         path: "am/manage-orders",
-        element: <ManageOrders />,
+        element: <RoleRoute allowedRoles={["admin , manager"]}>
+          <ManageOrders />
+        </RoleRoute>,
       },
       {
         path: "am/shipped-orders",
-        element: <ShippedOrders />,
+        element: <RoleRoute allowedRoles={["admin , manager"]}>
+          <ShippedOrders />
+        </RoleRoute>,
       },
       {
         path: "am/delivered-orders",
-        element: <DeliveredOrders />,
+        element: <RoleRoute allowedRoles={["admin , manager"]}>
+          <DeliveredOrders />
+        </RoleRoute>,
       },
       {
         path: "am/cancelled-orders",
-        element: <CancelledOrders />,
+        element: <RoleRoute allowedRoles={["admin , manager"]}>
+          <CancelledOrders />
+        </RoleRoute>,
       },
       {
         path: "admin/order-details/:id",
-        element: <OrderDetails />,
+        element: <RoleRoute allowedRoles={["admin , manager"]}>
+          <OrderDetails />
+        </RoleRoute>,
       },
       {
         path: "profile",
@@ -143,19 +179,19 @@ export const route = createBrowserRouter([
       },
       {
         path: "my-orders",
-        element: <MyOrders/>,
+        element: <MyOrders />,
       },
       {
         path: "order-detailse/:id",
-        element: <UserOrderDetails/>,
+        element: <UserOrderDetails />,
       },
       {
         path: "cancelled-orders",
-        element: <UserCancelledOrders/>,
+        element: <UserCancelledOrders />,
       },
       {
         path: "delivered-orders",
-        element: <UserDeliveredOrders/>,
+        element: <UserDeliveredOrders />,
       },
     ],
   },

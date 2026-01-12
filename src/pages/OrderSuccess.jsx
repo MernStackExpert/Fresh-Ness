@@ -48,7 +48,7 @@ const OrderSuccess = () => {
           </Link>
           
           <Link
-            to="/orders"
+            to="/dashboard/my-orders"
             className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 py-4 rounded-xl font-black border border-gray-200 hover:bg-gray-50 transition"
           >
             <IoBagCheckOutline /> View My Orders

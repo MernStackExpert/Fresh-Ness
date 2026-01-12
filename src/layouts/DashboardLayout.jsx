@@ -18,6 +18,7 @@ import {
 import { AuthContext } from "../Provider/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
 import { motion, AnimatePresence } from "framer-motion";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
 
 const DashboardLayout = () => {
   const {
@@ -111,6 +112,11 @@ const DashboardLayout = () => {
       path: "/dashboard/admin-manger/add-products",
       icon: <FiBox size={20} />,
     },
+    {
+      name: "My Orders",
+      path: "/dashboard/my-orders",
+      icon: <FiShoppingBag size={20} />,
+    },
     orderManagement,
   ];
 
@@ -124,6 +130,11 @@ const DashboardLayout = () => {
       name: "Add Products",
       path: "/dashboard/admin-manger/add-products",
       icon: <FiBox size={20} />,
+    },
+    {
+      name: "My Orders",
+      path: "/dashboard/my-orders",
+      icon: <FiShoppingBag size={20} />,
     },
 
     orderManagement,
@@ -305,6 +316,9 @@ const DashboardLayout = () => {
             <div className="h-8 w-[1px] bg-gray-100"></div>
 
             <div className="flex items-center gap-3">
+              <Link className="font-semibold text-3xl" to="/">
+                <IoArrowBackCircleSharp />
+              </Link>
               <div className="text-right hidden md:block">
                 <p className="text-[13px] font-black text-gray-900 leading-none">
                   {dbUser?.fullName}
