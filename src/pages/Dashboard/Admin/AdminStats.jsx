@@ -38,7 +38,7 @@ const AdminStats = () => {
         setData({
           users: userRes.data.totalUsers || 0,
           products: productRes.data.totalProducts || 0,
-          orders: allOrders.length,
+          orders: orderRes.data.totalOrder,
           revenue: totalRevenue,
         });
       } catch (error) {
@@ -50,6 +50,7 @@ const AdminStats = () => {
 
     fetchAllData();
   }, []);
+
 
   const statsConfig = [
     {
@@ -66,7 +67,7 @@ const AdminStats = () => {
     },
     {
       label: "Orders",
-      value: data.orders.toLocaleString(),
+      value: data.orders,
       icon: <FiShoppingBag size={22} />,
       color: "bg-purple-600",
     },

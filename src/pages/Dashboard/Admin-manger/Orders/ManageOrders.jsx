@@ -16,6 +16,8 @@ const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -35,8 +37,9 @@ const ManageOrders = () => {
       });
 
       setOrders(pendingOrders);
+      setCurrentPage(1);
     } catch (error) {
-      Swal.fire("Error", "Failed to fetch pending orders", "error");
+      Swal.fire("Error", "Failed to fetch pending orders", error);
     } finally {
       setLoading(false);
     }
@@ -71,39 +74,17 @@ const ManageOrders = () => {
           });
         }
       } catch (error) {
-        Swal.fire("Error", "Update failed", "error");
+        Swal.fire("Error", "Update failed", error);
       }
     }
   };
 
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: "Delete Order?",
-      text: "This action is permanent!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#EF4444",
-      confirmButtonText: "Delete",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const res = await axiosInstance.delete(`/orders/${id}`);
-        if (res.data.result.deletedCount > 0) {
-          setOrders((prev) => prev.filter((order) => order._id !== id));
-          Swal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "Order removed.",
-            timer: 1000,
-            showConfirmButton: false,
-          });
-        }
-      } catch (error) {
-        Swal.fire("Error", "Delete failed", "error");
-      }
-    }
-  };
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedOrders = orders.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   return (
     <motion.div
@@ -142,7 +123,7 @@ const ManageOrders = () => {
             <div className="py-20 text-center font-black animate-pulse text-gray-300 uppercase tracking-widest">
               Searching Pending Queue...
             </div>
-          ) : orders.length === 0 ? (
+          ) : paginatedOrders.length === 0 ? (
             <div className="py-20 text-center text-gray-400 font-bold uppercase tracking-widest">
               No Pending Orders Found
             </div>
@@ -150,17 +131,9 @@ const ManageOrders = () => {
             <>
               <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full text-left border-separate border-spacing-y-3">
-                  <thead>
-                    <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest px-4">
-                      <th className="px-6 py-2">Customer Details</th>
-                      <th className="px-6 py-2">Amount</th>
-                      <th className="px-6 py-2 text-center">Payment Status</th>
-                      <th className="px-6 py-2 text-center">Quick Actions</th>
-                    </tr>
-                  </thead>
                   <tbody>
                     <AnimatePresence>
-                      {orders.map((order) => (
+                      {paginatedOrders.map((order) => (
                         <motion.tr
                           layout
                           initial={{ opacity: 0 }}
@@ -209,7 +182,6 @@ const ManageOrders = () => {
                                   updateStatus(order._id, "shipped")
                                 }
                                 className="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all cursor-pointer"
-                                title="Ship Product"
                               >
                                 <FaTruck size={14} />
                               </button>
@@ -218,7 +190,6 @@ const ManageOrders = () => {
                                   updateStatus(order._id, "cancelled")
                                 }
                                 className="w-10 h-10 flex items-center justify-center bg-red-50 text-red-500 rounded-xl hover:bg-red-600 hover:text-white transition-all cursor-pointer"
-                                title="Cancel Order"
                               >
                                 <FaBan size={14} />
                               </button>
@@ -233,7 +204,7 @@ const ManageOrders = () => {
 
               <div className="grid grid-cols-2 gap-3 lg:hidden">
                 <AnimatePresence>
-                  {orders.map((order) => (
+                  {paginatedOrders.map((order) => (
                     <motion.div
                       layout
                       initial={{ opacity: 0 }}
@@ -284,6 +255,23 @@ const ManageOrders = () => {
                     </motion.div>
                   ))}
                 </AnimatePresence>
+              </div>
+
+              <div className="flex justify-center gap-3 mt-6">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                  className="px-4 py-2 text-sm font-bold bg-gray-100 rounded-lg disabled:opacity-50"
+                >
+                  Prev
+                </button>
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  className="px-4 py-2 text-sm font-bold bg-gray-100 rounded-lg disabled:opacity-50"
+                >
+                  Next
+                </button>
               </div>
             </>
           )}
