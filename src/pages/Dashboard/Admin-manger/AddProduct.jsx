@@ -123,11 +123,11 @@ const AddProduct = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className={`p-4 md:p-8 bg-gray-50 min-h-screen ${
+      className={`p-0 md:p-8 bg-gray-50 min-h-screen ${
         isRestrictedAdmin ? "pointer-events-none select-none" : ""
       }`}
     >
-      <div className="max-w-6xl mx-auto bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+      <div className="w-full md:max-w-6xl md:mx-auto bg-white rounded-lg md:rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white">
           <h2 className="text-4xl font-black tracking-tighter">
             Publish New Item
@@ -603,7 +603,10 @@ const AddProduct = () => {
             </button>
 
             {isRestrictedAdmin ? (
-              <button disabled className="px-16 py-5 rounded-2xl bg-green-600 text-white font-black shadow-2xl shadow-green-200 hover:bg-green-700 hover:-translate-y-1 transition-all cursor-p flex items-center gap-2 active:scale-95 disabled:opacity-50">
+              <button
+                disabled
+                className="px-16 py-5 rounded-2xl bg-green-600 text-white font-black shadow-2xl shadow-green-200 hover:bg-green-700 hover:-translate-y-1 transition-all cursor-p flex items-center gap-2 active:scale-95 disabled:opacity-50"
+              >
                 Publish Disabled
               </button>
             ) : (

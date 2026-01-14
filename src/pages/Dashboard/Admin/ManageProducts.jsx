@@ -158,7 +158,7 @@ const ManageProducts = () => {
               {loading ? (
                 <tr>
                   <td colSpan="6" className="text-center py-10 font-medium">
-                    Loading...
+                    <span className="loading loading-spinner loading-lg"></span>
                   </td>
                 </tr>
               ) : (
@@ -211,11 +211,11 @@ const ManageProducts = () => {
                         {isRestrictedAdmin ? (
                           <>
                             <FaEdit
-                              size={16}
+                              size={26}
                               className="text-gray-200 cursor-not-allowed p-1"
                             />
                             <FaTrashAlt
-                              size={16}
+                              size={26}
                               className="text-gray-200 cursor-not-allowed p-1"
                             />
                           </>
